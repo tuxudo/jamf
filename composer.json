@@ -1,0 +1,8 @@
+{
+    "name": "tuxudo/jamf",
+    "description": "Jamf module for munkireport.",
+    "license": "MIT",
+    "require": {
+        "php":"^7.0"
+    }
+}
