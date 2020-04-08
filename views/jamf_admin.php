@@ -1,4 +1,7 @@
-<?php $this->view('partials/head'); ?>
+<?php $this->view('partials/head'); 
+  // Add local config
+  configAppendFile(__DIR__ . '/../config.php');
+?>
 
 <div class="container">
     <div class="row"><span id="jamf_pull_all"></span></div>
