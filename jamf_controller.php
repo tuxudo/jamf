@@ -294,4 +294,9 @@ class jamf_controller extends Module_controller
         $jamf = new Jamf_model($serial_number);
         $obj->view('json', array('msg' => $jamf->rs));
     }
+    public function admin()
+    {
+        $obj = new View();
+        $obj->view('jamf_admin', [], $this->module_path.'/views/');
+    }
 } // End class jamf_module
