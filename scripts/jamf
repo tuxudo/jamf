@@ -8,7 +8,7 @@ if [ "$1" = 'manualcheck' ]; then
 fi
 
 # Check if Jamf binary is installed
-if [ ! -e "/usr/local/jamf/bin/jamf " ] ; then
+if [ ! -e "/usr/local/jamf/bin/jamf " ] || [ ! -e "/usr/local/bin/jamf" ]; then
     echo "Jamf doesn't appear to be installed. Is it enrolled?"
     exit 0
 fi
