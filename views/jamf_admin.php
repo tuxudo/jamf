@@ -188,7 +188,7 @@ function process_serial(serial,progessvalue,progressmax,processdata,serial_index
             // Get next serial
             serial = processdata[serial_index]["STUDENT_NUMBER"];
 
-            // Run function again with new username
+            // Run function again with new serial
             process_serial(serial,progessvalue,progressmax,processdata,serial_index)
         },
         statusCode: {

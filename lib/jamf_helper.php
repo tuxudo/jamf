@@ -359,15 +359,15 @@ class Jamf_helper
 //        $Jamf_model->casper_remote_logs_history = json_encode($json->computer_history->casper_remote_logs); // Encode the casper_remote_logs array for processing by the client tab
 //        $Jamf_model->screen_sharing_logs_history = json_encode($json->computer_history->screen_sharing_logs); // Encode the screen_sharing_logs array for processing by the client tab
 //        $Jamf_model->casper_imaging_logs_history = json_encode($json->computer_history->casper_imaging_logs); // Encode the casper_imaging_logs array for processing by the client tab
-//        $Jamf_model->commands_history = json_encode($json->computer_history->commands); // Encode the commands array for processing by the client tab
+        $Jamf_model->commands_history = json_encode($json->computer_history->commands); // Encode the commands array for processing by the client tab
 //        $Jamf_model->user_location_history = json_encode($json->computer_history->user_location); // Encode the user_location array for processing by the client tab
-//        $Jamf_model->mac_app_store_applications_history = json_encode($json->computer_history->mac_app_store_applications); // Encode the mac_app_store_applications array for processing by the client tab
+        $Jamf_model->mac_app_store_applications_history = json_encode($json->computer_history->mac_app_store_applications); // Encode the mac_app_store_applications array for processing by the client tab
         
         $Jamf_model->comands_completed = count($json->computer_history->commands->completed); // Count completed commands
         $Jamf_model->comands_pending = count($json->computer_history->commands->pending); // Count pending commands
         $Jamf_model->comands_failed = count($json->computer_history->commands->failed); // Count failed commands
 
-        // Save the data
+        // Save the data, Protecc the data
         $Jamf_model->save();
         $error = 'Jamf data processed';
         return $error;
