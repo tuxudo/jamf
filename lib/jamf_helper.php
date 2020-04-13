@@ -213,84 +213,84 @@ class Jamf_helper
         $Jamf_model->total_ram = $json->computer->hardware->total_ram;
         $Jamf_model->xprotect_version = $json->computer->hardware->xprotect_version;
         
-        // Software section
-        $Jamf_model->unix_executables = implode(",", $json->computer->software->unix_executables);
-        $Jamf_model->licensed_software = implode(",", $json->computer->software->licensed_software);
-        $Jamf_model->available_software_updates = implode(",", $json->computer->software->available_software_updates);
-        $Jamf_model->running_services = implode(",", $json->computer->software->running_services);
-        
-        if ($json->computer->software->cached_by_casper != 0){
-            $Jamf_model->cached_by_casper = implode(",", $json->computer->software->cached_by_casper);
-        } else {
-            $Jamf_model->cached_by_casper = null;
-        }
-        
-        if ($json->computer->software->installed_by_installer_swu != 0){
-            $Jamf_model->installed_by_installer_swu = implode(",", $json->computer->software->installed_by_installer_swu);
-        } else {
-            $Jamf_model->installed_by_installer_swu = null;
-        }
-        
-        if ($json->computer->software->installed_by_casper != 0){
-            $Jamf_model->installed_by_casper = implode(",", $json->computer->software->installed_by_casper);
-        } else {
-            $Jamf_model->installed_by_casper = null;
-        }
-        
+//        // Software section
+//        $Jamf_model->unix_executables = implode(",", $json->computer->software->unix_executables);
+//        $Jamf_model->licensed_software = implode(",", $json->computer->software->licensed_software);
+//        $Jamf_model->available_software_updates = implode(",", $json->computer->software->available_software_updates);
+//        $Jamf_model->running_services = implode(",", $json->computer->software->running_services);
+//
+//        if ($json->computer->software->cached_by_casper != 0){
+//            $Jamf_model->cached_by_casper = implode(",", $json->computer->software->cached_by_casper);
+//        } else {
+//            $Jamf_model->cached_by_casper = null;
+//        }
+//
+//        if ($json->computer->software->installed_by_installer_swu != 0){
+//            $Jamf_model->installed_by_installer_swu = implode(",", $json->computer->software->installed_by_installer_swu);
+//        } else {
+//            $Jamf_model->installed_by_installer_swu = null;
+//        }
+//
+//        if ($json->computer->software->installed_by_casper != 0){
+//            $Jamf_model->installed_by_casper = implode(",", $json->computer->software->installed_by_casper);
+//        } else {
+//            $Jamf_model->installed_by_casper = null;
+//        }
+
         // Extension attributes section
         if (isset($json->computer->extension_attributes)) {
             $Jamf_model->extension_attributes = json_encode($json->computer->extension_attributes); // Encode the extension_attributes array for processing by the client tab
         } else {
             $Jamf_model->extension_attributes = "[]";
         }
-        
-        // Peripherals section
-        if (isset($json->computer->peripherals->peripherals)) {
-            $Jamf_model->peripherals = json_encode($json->computer->peripherals->peripherals); // Encode the peripherals array for processing by the client tab
-        } else {
-            $Jamf_model->peripherals = "[]";
-        }
-        
-        // Certificates section
-        if (isset($json->computer->certificates)) {
-            $Jamf_model->certificates = json_encode($json->computer->certificates); // Encode the certificates array for processing by the client tab
-        } else {
-            $Jamf_model->certificates = "[]";
-        }
-                
+
+//        // Peripherals section
+//        if (isset($json->computer->peripherals->peripherals)) {
+//            $Jamf_model->peripherals = json_encode($json->computer->peripherals->peripherals); // Encode the peripherals array for processing by the client tab
+//        } else {
+//            $Jamf_model->peripherals = "[]";
+//        }
+
+//        // Certificates section
+//        if (isset($json->computer->certificates)) {
+//            $Jamf_model->certificates = json_encode($json->computer->certificates); // Encode the certificates array for processing by the client tab
+//        } else {
+//            $Jamf_model->certificates = "[]";
+//        }
+
         // Groups accounts section
         $Jamf_model->computer_group_memberships = implode(", ", $json->computer->groups_accounts->computer_group_memberships);
         $Jamf_model->local_accounts = json_encode($json->computer->groups_accounts->local_accounts); // Encode the local_accounts array for processing by the client tab
         $Jamf_model->user_inventories = json_encode($json->computer->groups_accounts->user_inventories); // Encode the user_inventories array for processing by the client tab
         $Jamf_model->disable_automatic_login = +$json->computer->groups_accounts->user_inventories->disable_automatic_login;
-        
-        
-        // Process Storage section separately as XML because of limitations (bug?) with JSON format
-        // Get computer data from Jamf
-        $url = "{$jamf_server}/JSSResource/computers/serialnumber/{$Jamf_model->serial_number}";
-        $jamf_storage_xml_result = $this->get_jamf_url_xml($url);
-        
-        $xml = simplexml_load_string($jamf_storage_xml_result);
-        $storage_array = []; // Create blank storage devices array
-        foreach ($xml->hardware->storage->device as $device) {
-            $partitions = []; // Create blank partitions array
-            $device_array = []; // Create blank device array
-            foreach ($device->partition as $partition) {
-                array_push($partitions, $partition);
-            }
-            // Fill in drive details
-            $device_array["partitions"] = $partitions;
-            $device_array['disk'] = "$device->disk";
-            $device_array['drive_capacity_mb'] = "$device->drive_capacity_mb";
-            $device_array['model'] = "$device->model";
-            $device_array['revision'] = "$device->revision";
-            $device_array['serial_number'] = "$device->serial_number";
-            $device_array['smart_status'] = "$device->smart_status";
-            $device_array['partition_count'] = count($partitions);
-            // Add drive to storage array
-            $storage_array[] = $device_array;
-        }
-        $Jamf_model->storage = json_encode($storage_array); // Encode the storage array for processing by the client tab
+
+
+//        // Process Storage section separately as XML because of limitations (bug?) with JSON format
+//        // Get computer data from Jamf
+//        $url = "{$jamf_server}/JSSResource/computers/serialnumber/{$Jamf_model->serial_number}";
+//        $jamf_storage_xml_result = $this->get_jamf_url_xml($url);
+//        
+//        $xml = simplexml_load_string($jamf_storage_xml_result);
+//        $storage_array = []; // Create blank storage devices array
+//        foreach ($xml->hardware->storage->device as $device) {
+//            $partitions = []; // Create blank partitions array
+//            $device_array = []; // Create blank device array
+//            foreach ($device->partition as $partition) {
+//                array_push($partitions, $partition);
+//            }
+//            // Fill in drive details
+//            $device_array["partitions"] = $partitions;
+//            $device_array['disk'] = "$device->disk";
+//            $device_array['drive_capacity_mb'] = "$device->drive_capacity_mb";
+//            $device_array['model'] = "$device->model";
+//            $device_array['revision'] = "$device->revision";
+//            $device_array['serial_number'] = "$device->serial_number";
+//            $device_array['smart_status'] = "$device->smart_status";
+//            $device_array['partition_count'] = count($partitions);
+//            // Add drive to storage array
+//            $storage_array[] = $device_array;
+//        }
+//        $Jamf_model->storage = json_encode($storage_array); // Encode the storage array for processing by the client tab
         
         
         // Process Profiles section
@@ -353,15 +353,15 @@ class Jamf_helper
         $json = json_decode($jamf_computerhistory_result);
         
         // Computer history section
-        $Jamf_model->computer_usage_logs_history = json_encode($json->computer_history->computer_usage_logs); // Encode the computer_usage_logs array for processing by the client tab
-        $Jamf_model->audits_history = json_encode($json->computer_history->audits); // Encode the audits array for processing by the client tab
-        $Jamf_model->policy_logs_history = json_encode($json->computer_history->policy_logs); // Encode the policy_logs array for processing by the client tab
-        $Jamf_model->casper_remote_logs_history = json_encode($json->computer_history->casper_remote_logs); // Encode the casper_remote_logs array for processing by the client tab
-        $Jamf_model->screen_sharing_logs_history = json_encode($json->computer_history->screen_sharing_logs); // Encode the screen_sharing_logs array for processing by the client tab
-        $Jamf_model->casper_imaging_logs_history = json_encode($json->computer_history->casper_imaging_logs); // Encode the casper_imaging_logs array for processing by the client tab
-        $Jamf_model->commands_history = json_encode($json->computer_history->commands); // Encode the commands array for processing by the client tab
-        $Jamf_model->user_location_history = json_encode($json->computer_history->user_location); // Encode the user_location array for processing by the client tab
-        $Jamf_model->mac_app_store_applications_history = json_encode($json->computer_history->mac_app_store_applications); // Encode the mac_app_store_applications array for processing by the client tab
+//        $Jamf_model->computer_usage_logs_history = json_encode($json->computer_history->computer_usage_logs); // Encode the computer_usage_logs array for processing by the client tab
+//        $Jamf_model->audits_history = json_encode($json->computer_history->audits); // Encode the audits array for processing by the client tab
+//        $Jamf_model->policy_logs_history = json_encode($json->computer_history->policy_logs); // Encode the policy_logs array for processing by the client tab
+//        $Jamf_model->casper_remote_logs_history = json_encode($json->computer_history->casper_remote_logs); // Encode the casper_remote_logs array for processing by the client tab
+//        $Jamf_model->screen_sharing_logs_history = json_encode($json->computer_history->screen_sharing_logs); // Encode the screen_sharing_logs array for processing by the client tab
+//        $Jamf_model->casper_imaging_logs_history = json_encode($json->computer_history->casper_imaging_logs); // Encode the casper_imaging_logs array for processing by the client tab
+//        $Jamf_model->commands_history = json_encode($json->computer_history->commands); // Encode the commands array for processing by the client tab
+//        $Jamf_model->user_location_history = json_encode($json->computer_history->user_location); // Encode the user_location array for processing by the client tab
+//        $Jamf_model->mac_app_store_applications_history = json_encode($json->computer_history->mac_app_store_applications); // Encode the mac_app_store_applications array for processing by the client tab
         
         $Jamf_model->comands_completed = count($json->computer_history->commands->completed); // Count completed commands
         $Jamf_model->comands_pending = count($json->computer_history->commands->pending); // Count pending commands

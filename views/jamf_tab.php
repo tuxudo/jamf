@@ -405,21 +405,6 @@
                 </div>
             </div>
           </div>
-          <!--History tab-->
-          <div id="jamf-history" class="tab-pane">
-            <!--History side tabs-->
-            <ul class="nav nav-tabs jamf-left">
-              <li class="active" id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-ComputerUsage" id="jamf_computerusage_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-AuditLogs" id="jamf_auditlogs_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-PolicyLogs" id="jamf_policylogs_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-JamfRemote" id="jamf_jamfremote_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-ScreenSharingLogs" id="jamf_screensharinglogs_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-JamfImaging" id="jamf_jamfimaging_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-ManagementHistory" id="jamf_managementhistory_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-UserLocationHistory" id="jamf_userlocationhistory_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-MacAppStoreAppsHistory" id="jamf_macappshistory_button"></a></li>
-            </ul>
-          </div>
         </div>
     </div>
 </div>
@@ -459,15 +444,6 @@ $(document).on('appReady', function(e, lang) {
 			$('#jamf_restricted_software_button').html('<i class="fa fa-shield"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.restricted_software_management")+'&nbsp;&nbsp;<span id="jamf-restsoft-cnt" class="badge"></span>'); // Restricted Software tab
 			$('#jamf_computergroups_button').html('<i class="fa fa-desktop"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.computergroups")); // Computer Groups tab
 			$('#jamf_patchmanagement_button').html('<i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.patch_management_logs_history")); // Patch Management tab
-            $('#jamf_computerusage_button').html('<i class="fa fa-desktop"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.computer_usage_logs_history")); // ComputerUsage tab
-            $('#jamf_auditlogs_button').html('<i class="fa fa-clipboard"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.audits_history")); // AuditLogs tab
-            $('#jamf_policylogs_button').html('<i class="fa fa-window-restore"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.policy_logs_history")); // PolicyLogs tab
-            $('#jamf_jamfremote_button').html('<i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.casper_remote_logs_history")); // JamfRemote tab
-            $('#jamf_screensharinglogs_button').html('<i class="fa fa-window-restore"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.screen_sharing_logs_history")); // ScreenSharingLogs tab
-            $('#jamf_jamfimaging_button').html('<i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.casper_imaging_logs_history")); // JamfImaging tab
-            $('#jamf_managementhistory_button').html('<i class="fa fa-tachometer"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.commands_history")); // ManagementHistory tab
-            $('#jamf_userlocationhistory_button').html('<i class="fa fa-building"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.user_location_history")); // UserLocationHistory tab
-            $('#jamf_macappshistory_button').html('<i class="fa fa-language"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.mac_app_store_applications_history")); // MacAppStoreAppsHistory tab
             
             // Fix dates, after checking if date is set
             if ( data['last_contact_time_epoch'] !== null ){

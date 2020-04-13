@@ -18,12 +18,12 @@
 
 <script>
 var jamf_pull_all_running = 0;
-    
+
 $(document).on('appReady', function(e, lang) {
-    
+
     // Generate pull all button and header    
     $('#jamf_pull_all').html('<h3 class="col-lg-6" >&nbsp;&nbsp;'+i18n.t('jamf.title_admin')+'&nbsp;&nbsp;<button id="GetAllJamf" class="btn btn-default btn-xs hide">'+i18n.t("jamf.pull_in_all")+'</button></h3>');
-        
+
     // Get Jamf server URL
     var jamf_server = "<?php echo rtrim(conf('jamf_server'), '/'); ?>";
 
@@ -36,26 +36,26 @@ $(document).on('appReady', function(e, lang) {
         var jamf_enabled = i18n.t('no');
         var jamf_enabled_int = 0;
     }
-    
+
     jamf_pull_all_running = 0;
-    
+
     // Check if Jamf API password is set
     if (parseInt("<?php echo strlen(conf('jamf_password')); ?>") > 0) {
         var jamf_password = i18n.t('yes');    
     } else { 
         var jamf_password = i18n.t('no');
     }
-    
+
     // Get verify SSL state
     if ("<?php echo conf('jamf_verify_ssl'); ?>" == true) {
         var jamf_verify_ssl = i18n.t('yes');    
     } else { 
         var jamf_verify_ssl = i18n.t('no');
     }
-    
+
     // Get Jamf API username
     var jamf_username = "<?php echo conf('jamf_username'); ?>"
-        
+
     if (jamf_enabled_int == 1){
         // Get JSS user info using the same process as the jamf_helper
         var jss_json = '<?php
@@ -75,7 +75,7 @@ $(document).on('appReady', function(e, lang) {
                 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $jamf_verify_ssl);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $jamf_verify_ssl);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Accept: application/json'));
-                
+
                 $jamfresult = curl_exec($ch);
                 if (strpos($jamfresult, 'The request requires user authentication') !== false){
                     echo '{"user": "Unauthorized"}';
@@ -86,11 +86,11 @@ $(document).on('appReady', function(e, lang) {
                 }
             }
         ?>'
-        
+
         // Process JSS user data
         var jssuserdata = JSON.parse(jss_json);
     }
-    
+
     // Build table
     var jssrows = '<table class="table table-striped table-condensed"><tbody>'
     jssrows = jssrows + '<tr><th>'+i18n.t('jamf.lookups_enabled')+'</th><td>'+jamf_enabled+'</td></tr>';
@@ -103,21 +103,21 @@ $(document).on('appReady', function(e, lang) {
         jssrows = jssrows + '<tr><th>'+i18n.t('jamf.license_type')+'</th><td>'+jssuserdata['user']['license_type']+'</td></tr>';
         jssrows = jssrows + '<tr><th>'+i18n.t('jamf.product')+'</th><td>'+jssuserdata['user']['product']+'</td></tr>';
         jssrows = jssrows + '<tr><th>'+i18n.t('jamf.version')+'</th><td>'+jssuserdata['user']['version']+'</td></tr>';
-        
+
         var jssprivileges = ''
         $.each(jssuserdata['user']['privileges'], function(i,d){
             jssprivileges = jssprivileges + d + "</br>";
         }) 
-        
+
         jssrows = jssrows + '<tr><th>'+i18n.t('jamf.privileges')+'</th><td>'+jssprivileges+'</td></tr>'
     } else if (jamf_enabled_int == 1 && jssuserdata['user'] == "Unauthorized"){
         jssrows = jssrows + '<tr><th class="danger">'+i18n.t('error')+'</th><td class="danger">'+i18n.t('jamf.not_authorized')+'</td></tr>';
     } else if (jamf_enabled_int == 1 && jssuserdata['user'] == "404_Not_Found"){
         jssrows = jssrows + '<tr><th class="danger">'+i18n.t('error')+'</th><td class="danger">'+i18n.t('jamf.bad_server')+'</td></tr>';
     }
-        
+
     $('#Jamf-System-Status').html(jssrows+'</tbody></table>') // Close table framework and assign to HTML ID
-    
+
     $('#GetAllJamf').click(function (e) {
         // Disable button and unhide progress bar
         $('#GetAllJamf').html(i18n.t('jamf.processing')+'...');
@@ -126,50 +126,79 @@ $(document).on('appReady', function(e, lang) {
         $('#Progress-Space').removeClass('hide');
         $('#GetAllJamf').addClass('disabled');
         jamf_pull_all_running = 1;
-        
+
         // Get JSON of all serial numbers
         $.getJSON(appUrl + '/module/jamf/pull_all_jamf_data', function (processdata) {
-        
+
             // Set count of serial numbers to be processed
             var progressmax = (processdata.length);
-            var progessvalue = 0;
+            var progessvalue = 0;;
             $('.progress-bar').attr('aria-valuemax', progressmax);
-            
-            // Process list of serial numbers
-            for (var serialindex = 0; serialindex < progressmax; serialindex++) {
-                // Get JSON for each serial number
-                $.getJSON(appUrl + '/module/jamf/pull_all_jamf_data/'+processdata[serialindex], function (resultdata) {
-                    // Calculate progress bar's percent
-                    var processpercent = Math.round((((progessvalue+1)/progressmax)*100));
-                    progessvalue++
-                    $('.progress-bar').css('width', (processpercent+'%')).attr('aria-valuenow', processpercent);
-                    $('#Progress-Bar-Percent').text(processpercent+'%');
-                    
-                    // Cleanup and reset when done processing serials
-                    if ((progessvalue) == progressmax) {
-                        // Make button clickable again and hide process bar elements
-                        $('#GetAllJamf').html(i18n.t('jamf.pull_in_all'));
-                        $('#GetAllJamf').removeClass('disabled');
-                        jamf_pull_all_running = 0;
-                        $("#Progress-Space").fadeOut(1200, function() {
-                            $('#Progress-Space').addClass('hide')
-                            var progresselement = document.getElementById('Progress-Space');
-                            progresselement.style.display = null;
-                            progresselement.style.opacity = null;
-                        });
-                        $("#GetAllJamf-Progress").fadeOut( 1200, function() {
-                            $('#GetAllJamf-Progress').addClass('hide')
-                            var progresselement = document.getElementById('GetAllJamf-Progress');
-                            progresselement.style.display = null;
-                            progresselement.style.opacity = null;
-                            $('.progress-bar').css('width', 0+'%').attr('aria-valuenow', 0);
-                        });
-                    }
-                });
-            };
+
+            var serial_index = 0;
+            var serial = processdata[0]
+
+            // Process the serial numbers
+            process_serial(serial,progessvalue,progressmax,processdata,serial_index)
         });
     });
 });
+
+// Process each Jamf request one at a time
+function process_serial(serial,progessvalue,progressmax,processdata,serial_index){
+
+        // Get JSON for each serial number
+        request = $.ajax({
+        url: appUrl + '/module/jamf/pull_all_jamf_data/'+processdata[serial_index],
+        type: "get",
+        success: function (obj, resultdata) {
+
+            // Calculate progress bar's percent
+            var processpercent = Math.round((((progessvalue+1)/progressmax)*100));
+            progessvalue++
+            $('.progress-bar').css('width', (processpercent+'%')).attr('aria-valuenow', processpercent);
+            $('#Progress-Bar-Percent').text(progessvalue+"/"+progressmax);
+
+            // Cleanup and reset when done processing serials
+            if ((progessvalue) == progressmax) {
+                // Make button clickable again and hide process bar elements
+                $('#GetAllJamf').html(i18n.t('jamf.pull_in_all'));
+                $('#GetAllJamf').removeClass('disabled');
+                jamf_pull_all_running = 0;
+                $("#Progress-Space").fadeOut(1200, function() {
+                    $('#Progress-Space').addClass('hide')
+                    var progresselement = document.getElementById('Progress-Space');
+                    progresselement.style.display = null;
+                    progresselement.style.opacity = null;
+                });
+                $("#GetAllJamf-Progress").fadeOut( 1200, function() {
+                    $('#GetAllJamf-Progress').addClass('hide')
+                    var progresselement = document.getElementById('GetAllJamf-Progress');
+                    progresselement.style.display = null;
+                    progresselement.style.opacity = null;
+                    $('.progress-bar').css('width', 0+'%').attr('aria-valuenow', 0);
+                });
+
+                return true;
+            }
+
+            // Go to the next serial
+            serial_index++
+
+            // Get next serial
+            serial = processdata[serial_index]["STUDENT_NUMBER"];
+
+            // Run function again with new username
+            process_serial(serial,progessvalue,progressmax,processdata,serial_index)
+        },
+        statusCode: {
+            500: function() {
+                jamf_pull_all_running = 0;
+                alert("An internal server occurred. Please refresh the page and try again.");
+            }
+        }
+    });
+}
 
 // Warning about leaving page if Jamf pull all is running
 window.onbeforeunload = function() {
@@ -179,7 +208,7 @@ window.onbeforeunload = function() {
         return;
     }
 };
-    
+
 </script>
 
 <?php $this->view('partials/foot'); ?>

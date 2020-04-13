@@ -230,13 +230,13 @@ class jamf_controller extends Module_controller
             $obj->view('json', array('msg' => array('error' => 'Not authenticated')));
             return;
         }
-        
+
         // Check if we are returning a list of all serials or processing a serial
         // Returns either a list of all serial numbers in MunkiReport OR
         // a JSON of what serial number was just ran with the status of the run
         if ( $incoming_serial == ''){
             // Get all the serial numbers in an object
-            $machine = new Machine_model();
+            $machine = new Jamf_model();
             $filter = get_machine_group_filter();
 
             $sql = "SELECT machine.serial_number
