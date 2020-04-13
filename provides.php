@@ -21,8 +21,8 @@ return array(
         'jamf_buildings' => array('view' => 'jamf_buildings_widget'),
         'jamf_checkin' => array('view' => 'jamf_checkin_widget'),
     ),
-    'admins' => array(
-        'jamf' => array('view' => 'jamf_admin', 'i18n' => 'jamf.title'),
+    'admin_pages' => array(
+        'admin' => array('i18n' => 'jamf.title'),
     ),
     'reports' => array(
         'jamf' => array('view' => 'jamf_report', 'i18n' => 'jamf.report')

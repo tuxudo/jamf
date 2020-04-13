@@ -385,6 +385,7 @@ class Jamf_helper
     {
         $jamf_username = conf('jamf_username');
         $jamf_password = conf('jamf_password');
+        $jamf_verify_ssl = conf('jamf_verify_ssl');
         if(conf('jamf_verify_ssl') == FALSE || $jamf_verify_ssl == "false" || $jamf_verify_ssl == "FALSE" || $jamf_verify_ssl == "0" || $jamf_verify_ssl == 0){
             $jamf_verify_ssl = 0;
         } else {
@@ -415,6 +416,7 @@ class Jamf_helper
     {
         $jamf_username = conf('jamf_username');
         $jamf_password = conf('jamf_password');
+        $jamf_verify_ssl = conf('jamf_verify_ssl');
         if(conf('jamf_verify_ssl') == FALSE || $jamf_verify_ssl == "false" || $jamf_verify_ssl == "FALSE" || $jamf_verify_ssl == "0" || $jamf_verify_ssl == 0){
             $jamf_verify_ssl = 0;
         } else {
