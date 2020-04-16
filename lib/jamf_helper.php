@@ -22,7 +22,8 @@ class Jamf_helper
         $jamf_computer_result = $this->get_jamf_url($url);
 
         if(! $jamf_computer_result){
-            throw new Exception("No data received from Jamf server", 1);
+            print_r("No data received from Jamf server");
+            exit();
         }
 
         // Process computer data
@@ -106,13 +107,13 @@ class Jamf_helper
         } else {
             $Jamf_model->last_cloud_backup_date_epoch = null;
         }
-        
+
         if (+$json->computer->general->last_enrolled_date_epoch != 0){
             $Jamf_model->last_enrolled_date_epoch = $json->computer->general->last_enrolled_date_epoch;
         } else {
             $Jamf_model->last_enrolled_date_epoch = null;
         }
-        
+
         $Jamf_model->distribution_point = $json->computer->general->distribution_point;
         $Jamf_model->sus = $json->computer->general->sus;
         $Jamf_model->netboot_server = $json->computer->general->netboot_server;
@@ -125,7 +126,7 @@ class Jamf_helper
             $Jamf_model->site_id = "";
             $Jamf_model->site_name = "";
         }
-                
+
         // Location section
         $Jamf_model->username = $json->computer->location->username;
         $Jamf_model->realname = $json->computer->location->realname;
@@ -135,7 +136,7 @@ class Jamf_helper
         $Jamf_model->department = $json->computer->location->department;
         $Jamf_model->building = $json->computer->location->building;
         $Jamf_model->room = $json->computer->location->room;
-        
+
         // Purchasing section
         $Jamf_model->is_purchased = +$json->computer->purchasing->is_purchased;
         $Jamf_model->is_leased = +$json->computer->purchasing->is_leased;
@@ -152,13 +153,13 @@ class Jamf_helper
         } else {
             $Jamf_model->po_date_epoch = null;
         }
-        
+
         if (+$json->computer->purchasing->warranty_expires_epoch != 0){
             $Jamf_model->warranty_expires_epoch = $json->computer->purchasing->warranty_expires_epoch;
         } else {
             $Jamf_model->warranty_expires_epoch = null;
         }
-        
+
         if (+$json->computer->purchasing->lease_expires_epoch != 0){
             $Jamf_model->lease_expires_epoch = $json->computer->purchasing->lease_expires_epoch;
         } else {
@@ -212,7 +213,7 @@ class Jamf_helper
         $Jamf_model->smc_version = $json->computer->hardware->smc_version;
         $Jamf_model->total_ram = $json->computer->hardware->total_ram;
         $Jamf_model->xprotect_version = $json->computer->hardware->xprotect_version;
-        
+
 //        // Software section
 //        $Jamf_model->unix_executables = implode(",", $json->computer->software->unix_executables);
 //        $Jamf_model->licensed_software = implode(",", $json->computer->software->licensed_software);
@@ -264,7 +265,6 @@ class Jamf_helper
         $Jamf_model->user_inventories = json_encode($json->computer->groups_accounts->user_inventories); // Encode the user_inventories array for processing by the client tab
         $Jamf_model->disable_automatic_login = +$json->computer->groups_accounts->user_inventories->disable_automatic_login;
 
-
 //        // Process Storage section separately as XML because of limitations (bug?) with JSON format
 //        // Get computer data from Jamf
 //        $url = "{$jamf_server}/JSSResource/computers/serialnumber/{$Jamf_model->serial_number}";
@@ -291,8 +291,7 @@ class Jamf_helper
 //            $storage_array[] = $device_array;
 //        }
 //        $Jamf_model->storage = json_encode($storage_array); // Encode the storage array for processing by the client tab
-        
-        
+
         // Process Profiles section
         $profiles_array = [];
         foreach($json->computer->configuration_profiles as $profile){
@@ -301,6 +300,16 @@ class Jamf_helper
                 // Get profile data from Jamf
                 $url = "{$jamf_server}/JSSResource/osxconfigurationprofiles/id/{$profile->id}";
                 $jamf_profile_result = $this->get_jamf_url($url);
+
+                // Skip if the profile isn't found
+                if (strpos($jamf_profile_result, "Not Found") !== false) {
+                    continue;
+                }
+
+                // Skip if there was an error
+                if (!$jamf_profile_result) {
+                    continue;
+                }
 
                 // Process profile data
                 $profile_json = json_decode($jamf_profile_result);
@@ -317,63 +326,76 @@ class Jamf_helper
                 array_push($profiles_array, $profile);
             }
         }
-        
+
         $Jamf_model->configuration_profiles = json_encode($profiles_array); // Encode the profiles_array array for processing by the client tab
-        
+
         // Get computer management data from Jamf
         $url = "{$jamf_server}/JSSResource/computermanagement/serialnumber/{$Jamf_model->serial_number}";
         $jamf_computermanagement_result = $this->get_jamf_url($url);
-        
-        // Process computer mangement data
-        $json = json_decode($jamf_computermanagement_result);
-        
-        // Computer Management
-        $Jamf_model->policy_logs_history = json_encode($json->computer_management->policies); // Encode the policies array for processing by the client tab
-        $Jamf_model->ebooks_management = json_encode($json->computer_management->ebooks); // Encode the ebooks array for processing by the client tab
-        $Jamf_model->mac_app_store_apps_management = json_encode($json->computer_management->mac_app_store_apps); // Encode the mac_app_store_apps array for processing by the client tab
-        $Jamf_model->managed_preference_profiles_management = json_encode($json->computer_management->managed_preference_profiles); // Encode the managed_preference_profiles array for processing by the client tab
-        $Jamf_model->restricted_software_management = json_encode($json->computer_management->restricted_software); // Encode the restricted_software array for processing by the client tab
-        $Jamf_model->policies_management = json_encode($json->computer_management->policies); // Encode the policies array for processing by the client tab
-        $Jamf_model->smart_groups_management = json_encode($json->computer_management->smart_groups); // Encode the smart_groups array for processing by the client tab
-        $Jamf_model->static_groups_management = json_encode($json->computer_management->static_groups); // Encode the static_groups array for processing by the client tab
-        
-        if (isset($json->computer_management->patch_reporting)) {
-            $Jamf_model->patch_reporting_software_titles_management = json_encode($json->computer_management->patch_reporting->patch_reporting_software_titles);
-            $Jamf_model->patch_policies_management = json_encode($json->computer_management->patch_reporting->patch_policies);
-        } else {
-            $Jamf_model->patch_reporting_software_titles_management = "[]";
-            $Jamf_model->patch_policies_management = "[]";
+
+        // Only process if there is a result
+        if ($jamf_computermanagement_result) {
+
+            // Process computer mangement data
+            $json = json_decode($jamf_computermanagement_result);
+
+            // Computer Management
+            $Jamf_model->policy_logs_history = json_encode($json->computer_management->policies); // Encode the policies array for processing by the client tab
+            $Jamf_model->ebooks_management = json_encode($json->computer_management->ebooks); // Encode the ebooks array for processing by the client tab
+            $Jamf_model->mac_app_store_apps_management = json_encode($json->computer_management->mac_app_store_apps); // Encode the mac_app_store_apps array for processing by the client tab
+            $Jamf_model->managed_preference_profiles_management = json_encode($json->computer_management->managed_preference_profiles); // Encode the managed_preference_profiles array for processing by the client tab
+            $Jamf_model->restricted_software_management = json_encode($json->computer_management->restricted_software); // Encode the restricted_software array for processing by the client tab
+            $Jamf_model->policies_management = json_encode($json->computer_management->policies); // Encode the policies array for processing by the client tab
+            $Jamf_model->smart_groups_management = json_encode($json->computer_management->smart_groups); // Encode the smart_groups array for processing by the client tab
+            $Jamf_model->static_groups_management = json_encode($json->computer_management->static_groups); // Encode the static_groups array for processing by the client tab
+
+            if (isset($json->computer_management->patch_reporting)) {
+                $Jamf_model->patch_reporting_software_titles_management = json_encode($json->computer_management->patch_reporting->patch_reporting_software_titles);
+                $Jamf_model->patch_policies_management = json_encode($json->computer_management->patch_reporting->patch_policies);
+            } else {
+                $Jamf_model->patch_reporting_software_titles_management = "[]";
+                $Jamf_model->patch_policies_management = "[]";
+            }
         }
-        
+
         // Get computer history data from Jamf
         $url = "{$jamf_server}/JSSResource/computerhistory/serialnumber/{$Jamf_model->serial_number}";
         $jamf_computerhistory_result = $this->get_jamf_url($url);
-            
-        // Process computer history data
-        $json = json_decode($jamf_computerhistory_result);
-        
-        // Computer history section
-//        $Jamf_model->computer_usage_logs_history = json_encode($json->computer_history->computer_usage_logs); // Encode the computer_usage_logs array for processing by the client tab
-//        $Jamf_model->audits_history = json_encode($json->computer_history->audits); // Encode the audits array for processing by the client tab
-//        $Jamf_model->policy_logs_history = json_encode($json->computer_history->policy_logs); // Encode the policy_logs array for processing by the client tab
-//        $Jamf_model->casper_remote_logs_history = json_encode($json->computer_history->casper_remote_logs); // Encode the casper_remote_logs array for processing by the client tab
-//        $Jamf_model->screen_sharing_logs_history = json_encode($json->computer_history->screen_sharing_logs); // Encode the screen_sharing_logs array for processing by the client tab
-//        $Jamf_model->casper_imaging_logs_history = json_encode($json->computer_history->casper_imaging_logs); // Encode the casper_imaging_logs array for processing by the client tab
-        $Jamf_model->commands_history = json_encode($json->computer_history->commands); // Encode the commands array for processing by the client tab
-//        $Jamf_model->user_location_history = json_encode($json->computer_history->user_location); // Encode the user_location array for processing by the client tab
-        $Jamf_model->mac_app_store_applications_history = json_encode($json->computer_history->mac_app_store_applications); // Encode the mac_app_store_applications array for processing by the client tab
-        
-        $Jamf_model->comands_completed = count($json->computer_history->commands->completed); // Count completed commands
-        $Jamf_model->comands_pending = count($json->computer_history->commands->pending); // Count pending commands
-        $Jamf_model->comands_failed = count($json->computer_history->commands->failed); // Count failed commands
+
+        // Only process if there is a result
+        if (!$jamf_computerhistory_result) {
+
+            // Process computer history data
+            $json = json_decode($jamf_computerhistory_result);
+
+            // Computer history section
+    //        $Jamf_model->computer_usage_logs_history = json_encode($json->computer_history->computer_usage_logs); // Encode the computer_usage_logs array for processing by the client tab
+    //        $Jamf_model->audits_history = json_encode($json->computer_history->audits); // Encode the audits array for processing by the client tab
+    //        $Jamf_model->policy_logs_history = json_encode($json->computer_history->policy_logs); // Encode the policy_logs array for processing by the client tab
+    //        $Jamf_model->casper_remote_logs_history = json_encode($json->computer_history->casper_remote_logs); // Encode the casper_remote_logs array for processing by the client tab
+    //        $Jamf_model->screen_sharing_logs_history = json_encode($json->computer_history->screen_sharing_logs); // Encode the screen_sharing_logs array for processing by the client tab
+    //        $Jamf_model->casper_imaging_logs_history = json_encode($json->computer_history->casper_imaging_logs); // Encode the casper_imaging_logs array for processing by the client tab
+            $Jamf_model->commands_history = json_encode($json->computer_history->commands); // Encode the commands array for processing by the client tab
+    //        $Jamf_model->user_location_history = json_encode($json->computer_history->user_location); // Encode the user_location array for processing by the client tab
+            $Jamf_model->mac_app_store_applications_history = json_encode($json->computer_history->mac_app_store_applications); // Encode the mac_app_store_applications array for processing by the client tab
+
+            $Jamf_model->comands_completed = count($json->computer_history->commands->completed); // Count completed commands
+            $Jamf_model->comands_pending = count($json->computer_history->commands->pending); // Count pending commands
+            $Jamf_model->comands_failed = count($json->computer_history->commands->failed); // Count failed commands
+//        } else {
+//            $Jamf_model->commands_history = "[]";
+//            $Jamf_model->mac_app_store_applications_history = "[]";
+//            $Jamf_model->comands_completed = 0;
+//            $Jamf_model->comands_pending = 0;
+//            $Jamf_model->comands_failed = 0;
+        }
 
         // Save the data, Protecc the data
         $Jamf_model->save();
         $error = 'Jamf data processed';
         return $error;
     }
-    
-    
+
     /**
      * Retrieve url
      *
@@ -402,13 +424,23 @@ class Jamf_helper
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $jamf_verify_ssl);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array ("Accept: application/json"));
         $return = curl_exec($ch);
+        
+        // Check for timeout
+        if (curl_errno($ch) && curl_errno($ch) == 28) {
+            print_r("Jamf server timed out");
+            return false;
+        } else if (curl_errno($ch)) {
+            print_r("There was an error getting data from the Jamf server: ".curl_errno($ch));
+            return false;
+        }
+
         return $return;
     }
 
     /**
      * Retrieve url as XML
      *
-     * @return JSON object if successful, FALSE if failed
+     * @return XML object if successful, FALSE if failed
      * @author n8felton, tweaked for Jamf by Tuxudo
      *
      **/
