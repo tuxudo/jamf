@@ -363,7 +363,7 @@ class Jamf_helper
         $jamf_computerhistory_result = $this->get_jamf_url($url);
 
         // Only process if there is a result
-        if (!$jamf_computerhistory_result) {
+        if ($jamf_computerhistory_result) {
 
             // Process computer history data
             $json = json_decode($jamf_computerhistory_result);
@@ -417,7 +417,7 @@ class Jamf_helper
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5); // Timeout of 5 seconds
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Timeout of 10 seconds
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, "$jamf_username:$jamf_password");
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $jamf_verify_ssl);
@@ -427,10 +427,10 @@ class Jamf_helper
         
         // Check for timeout
         if (curl_errno($ch) && curl_errno($ch) == 28) {
-            print_r("Jamf server timed out");
+            error_log("MunkiReport:- Jamf server timed out for - ".$url, 0);
             return false;
         } else if (curl_errno($ch)) {
-            print_r("There was an error getting data from the Jamf server: ".curl_errno($ch));
+            error_log("MunkiReport:- There was an error getting data from the Jamf server: ".curl_errno($ch)." - ".$url, 0);
             return false;
         }
 
@@ -458,13 +458,23 @@ class Jamf_helper
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5); // Timeout of 5 seconds
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Timeout of 10 seconds
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, "$jamf_username:$jamf_password");
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $jamf_verify_ssl);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $jamf_verify_ssl);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array ("Accept: document/xml"));
         $return = curl_exec($ch);
+        
+        // Check for timeout
+        if (curl_errno($ch) && curl_errno($ch) == 28) {
+            error_log("MunkiReport:- Jamf server timed out for - ".$url, 0);
+            return false;
+        } else if (curl_errno($ch)) {
+            error_log("MunkiReport:- There was an error getting data from the Jamf server: ".curl_errno($ch)." - ".$url, 0);
+            return false;
+        }
+
         return $return;
     }
 }
