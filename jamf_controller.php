@@ -36,7 +36,7 @@ class jamf_controller extends Module_controller
                         ".get_machine_group_filter();
         $obj->view('json', array('msg' => current($queryobj->query($sql))));
     }
-        
+
     /**
     * Get user approved enrollment info
     *
@@ -53,7 +53,7 @@ class jamf_controller extends Module_controller
                         ".get_machine_group_filter();
         $obj->view('json', array('msg' => current($queryobj->query($sql))));
     }
-            
+
     /**
     * Get user approved mdm info
     *
@@ -70,7 +70,7 @@ class jamf_controller extends Module_controller
                         ".get_machine_group_filter();
         $obj->view('json', array('msg' => current($queryobj->query($sql))));
     }
-    
+
     /**
     * Get mdm capable user info
     *
@@ -87,7 +87,7 @@ class jamf_controller extends Module_controller
                         ".get_machine_group_filter();
         $obj->view('json', array('msg' => current($queryobj->query($sql))));
     }
-    
+
     /**
     * Get purchased info
     *
@@ -104,7 +104,7 @@ class jamf_controller extends Module_controller
                         ".get_machine_group_filter();
         $obj->view('json', array('msg' => current($queryobj->query($sql))));
     }
-      
+
     /**
     * Get pending failed info
     *
@@ -122,7 +122,7 @@ class jamf_controller extends Module_controller
                         ".get_machine_group_filter();
         $obj->view('json', array('msg' => current($queryobj->query($sql))));
     }
-    
+
     /**
     * Get automatic login info
     *
@@ -139,7 +139,7 @@ class jamf_controller extends Module_controller
                         ".get_machine_group_filter();
         $obj->view('json', array('msg' => current($queryobj->query($sql))));
     }
-    
+
     /**
      * Get XProtect version for widget
      *
@@ -165,7 +165,7 @@ class jamf_controller extends Module_controller
         $jamf = new Jamf_model;
         $obj->view('json', array('msg' => $jamf->get_jamf_version()));
     }
-    
+
     /**
      * Get departments for widget
      *
@@ -178,7 +178,7 @@ class jamf_controller extends Module_controller
         $jamf = new Jamf_model;
         $obj->view('json', array('msg' => $jamf->get_jamf_departments()));
     }
-    
+
     /**
      * Get buildings for widget
      *
@@ -191,7 +191,7 @@ class jamf_controller extends Module_controller
         $jamf = new Jamf_model;
         $obj->view('json', array('msg' => $jamf->get_jamf_buildings()));
     }
-    
+
     /**
      * REST API for retrieving last checkin data for widget
      * @tuxudo
@@ -215,7 +215,7 @@ class jamf_controller extends Module_controller
          $lastcheckin_array = $queryobj->query($sql);
          $obj->view('json', array('msg' => $lastcheckin_array));
      }
-    
+
     /**
      * Pull in Jamf data for all serial numbers :D
      *
@@ -230,13 +230,13 @@ class jamf_controller extends Module_controller
             $obj->view('json', array('msg' => array('error' => 'Not authenticated')));
             return;
         }
-        
+
         // Check if we are returning a list of all serials or processing a serial
         // Returns either a list of all serial numbers in MunkiReport OR
         // a JSON of what serial number was just ran with the status of the run
         if ( $incoming_serial == ''){
             // Get all the serial numbers in an object
-            $machine = new Machine_model();
+            $machine = new Jamf_model();
             $filter = get_machine_group_filter();
 
             $sql = "SELECT machine.serial_number
@@ -266,7 +266,7 @@ class jamf_controller extends Module_controller
             $obj->view('json', array('msg' => $out));
         }
     }
-    
+
     /**
      * Force data pull from Jamf
      *

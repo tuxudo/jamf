@@ -33,11 +33,12 @@ new Jamf_model;
             <th data-i18n="jamf.last_contact_time_epoch" data-colname='jamf.last_contact_time_epoch'></th>
             <th data-i18n="jamf.last_enrolled_date_epoch" data-colname='jamf.last_enrolled_date_epoch'></th>
             <th data-i18n="jamf.report_date_epoch" data-colname='jamf.report_date_epoch'></th>
+            <th data-i18n="jamf.jamf_id_short" data-colname='jamf.jamf_id'></th>
           </tr>
         </thead>
         <tbody>
             <tr>
-              <td data-i18n="listing.loading" colspan="20" class="dataTables_empty"></td>
+              <td data-i18n="listing.loading" colspan="21" class="dataTables_empty"></td>
             </tr>
         </tbody>
       </table>
@@ -135,43 +136,44 @@ new Jamf_model;
 	        	var sn=$('td:eq(1)', nRow).html();
 	        	var link = mr.getClientDetailLink(name, sn, '#tab_jamf-tab');
 	        	$('td:eq(0)', nRow).html(link);
-                 
+
 	        	// Make serial number in second column link to Jamf
 	        	var serial=$('td:eq(1)', nRow).html();
+	        	var jamf_id=$('td:eq(20)', nRow).html();
                 var jamf_server = "<?php echo rtrim(conf('jamf_server'), '/'); ?>"; // Get the Jamf server address
-	        	var link = '<a class="btn btn-default btn-xs" href="'+jamf_server+'/computers.html?sn='+serial+'" target="_blank" title="'+i18n.t('jamf.view_in_jamf')+'">'+serial+'</a>';
+	        	var link = '<a class="btn btn-default btn-xs" href="'+jamf_server+'/computers.html?id='+jamf_id+'&o=r&v=inventory" target="_blank" title="'+i18n.t('jamf.view_in_jamf')+'">'+serial+'</a>';
 	        	$('td:eq(1)', nRow).html(link);
-                
+
 	        	// managed
 	        	var colvar=$('td:eq(3)', nRow).html();
 	        	colvar = colvar == 1 ? i18n.t('yes') :
 	        	(colvar == 0 ? i18n.t('no') : '')
 	        	$('td:eq(3)', nRow).html(colvar)
-                
+
 	        	// enrolled_via_dep
 	        	var colvar=$('td:eq(4)', nRow).html();
 	        	colvar = colvar == 1 ? i18n.t('yes') :
 	        	(colvar == 0 ? i18n.t('no') : '')
 	        	$('td:eq(4)', nRow).html(colvar)
-                
+
 	        	// user_approved_enrollment
 	        	var colvar=$('td:eq(5)', nRow).html();
 	        	colvar = colvar == '1' ? i18n.t('yes') :
 	        	(colvar === '0' ? i18n.t('no') : '')
 	        	$('td:eq(5)', nRow).html(colvar)
-                
+
 	        	// user_approved_mdm
 	        	var colvar=$('td:eq(6)', nRow).html();
 	        	colvar = colvar == '1' ? i18n.t('yes') :
 	        	(colvar === '0' ? i18n.t('no') : '')
 	        	$('td:eq(6)', nRow).html(colvar)
-                
+
 	        	// disable_automatic_login
 	        	var colvar=$('td:eq(12)', nRow).html();
 	        	colvar = colvar == '1' ? i18n.t('yes') :
 	        	(colvar === '0' ? i18n.t('no') : '')
 	        	$('td:eq(12)', nRow).html(colvar)
-                
+
 	        	// is_purchased
 	        	var colvar=$('td:eq(13)', nRow).html();
 	        	colvar = colvar == '1' ? i18n.t('jamf.is_purchased') :
@@ -181,11 +183,11 @@ new Jamf_model;
 	        	// Format last_contact_time_epoch timestamp
 	        	var date = parseInt($('td:eq(17)', nRow).html());
 	        	$('td:eq(17)', nRow).html('<span title="'+moment(date).format('llll')+'">'+moment(date).fromNow()+'</span>');
-                
+
 	        	// Format last_enrolled_date_epoch timestamp
 	        	var date = parseInt($('td:eq(18)', nRow).html());
 	        	$('td:eq(18)', nRow).html('<span title="'+moment(date).format('llll')+'">'+moment(date).fromNow()+'</span>');
-                
+
 	        	// Format report_date_epoch timestamp
 	        	var date = parseInt($('td:eq(19)', nRow).html());
 	        	$('td:eq(19)', nRow).html('<span title="'+moment(date).format('llll')+'">'+moment(date).fromNow()+'</span>');

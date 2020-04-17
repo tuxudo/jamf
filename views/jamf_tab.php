@@ -405,21 +405,6 @@
                 </div>
             </div>
           </div>
-          <!--History tab-->
-          <div id="jamf-history" class="tab-pane">
-            <!--History side tabs-->
-            <ul class="nav nav-tabs jamf-left">
-              <li class="active" id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-ComputerUsage" id="jamf_computerusage_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-AuditLogs" id="jamf_auditlogs_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-PolicyLogs" id="jamf_policylogs_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-JamfRemote" id="jamf_jamfremote_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-ScreenSharingLogs" id="jamf_screensharinglogs_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-JamfImaging" id="jamf_jamfimaging_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-ManagementHistory" id="jamf_managementhistory_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-UserLocationHistory" id="jamf_userlocationhistory_button"></a></li>
-              <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-MacAppStoreAppsHistory" id="jamf_macappshistory_button"></a></li>
-            </ul>
-          </div>
         </div>
     </div>
 </div>
@@ -459,15 +444,6 @@ $(document).on('appReady', function(e, lang) {
 			$('#jamf_restricted_software_button').html('<i class="fa fa-shield"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.restricted_software_management")+'&nbsp;&nbsp;<span id="jamf-restsoft-cnt" class="badge"></span>'); // Restricted Software tab
 			$('#jamf_computergroups_button').html('<i class="fa fa-desktop"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.computergroups")); // Computer Groups tab
 			$('#jamf_patchmanagement_button').html('<i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.patch_management_logs_history")); // Patch Management tab
-            $('#jamf_computerusage_button').html('<i class="fa fa-desktop"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.computer_usage_logs_history")); // ComputerUsage tab
-            $('#jamf_auditlogs_button').html('<i class="fa fa-clipboard"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.audits_history")); // AuditLogs tab
-            $('#jamf_policylogs_button').html('<i class="fa fa-window-restore"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.policy_logs_history")); // PolicyLogs tab
-            $('#jamf_jamfremote_button').html('<i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.casper_remote_logs_history")); // JamfRemote tab
-            $('#jamf_screensharinglogs_button').html('<i class="fa fa-window-restore"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.screen_sharing_logs_history")); // ScreenSharingLogs tab
-            $('#jamf_jamfimaging_button').html('<i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.casper_imaging_logs_history")); // JamfImaging tab
-            $('#jamf_managementhistory_button').html('<i class="fa fa-tachometer"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.commands_history")); // ManagementHistory tab
-            $('#jamf_userlocationhistory_button').html('<i class="fa fa-building"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.user_location_history")); // UserLocationHistory tab
-            $('#jamf_macappshistory_button').html('<i class="fa fa-language"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.mac_app_store_applications_history")); // MacAppStoreAppsHistory tab
             
             // Fix dates, after checking if date is set
             if ( data['last_contact_time_epoch'] !== null ){
@@ -570,268 +546,280 @@ $(document).on('appReady', function(e, lang) {
 
 
             // Make Extension Attributes table
-            var extensionsdata = JSON.parse(data['extension_attributes']);
-            // Set count of extension attributes
-            $('#jamf-extensions-cnt').text(extensionsdata.length);
-            // Make the table framework
-            var extensionsrows = '<h4>'+i18n.t('jamf.extension_attributes')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/computerExtensionAttributes.html"><i class="fa fa-cog"></i> '+i18n.t("jamf.extension_attributes")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.attribute')+'</th>'
-            if (parseInt(extensionsdata.length) == 0 ){
-                    extensionsrows = extensionsrows+'<tr><td>'+i18n.t('jamf.no_extension_attributes')+'</td><td></td></tr>';   
-            } else {
-                $.each(extensionsdata, function(i,d){
-                    // Generate rows from data
-                    extensionsrows = extensionsrows + '<tr><td><a target="_blank" href="'+jamf_server+'/computerExtensionAttributes.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td><td>'+d['value']+'</td></tr>';
-                })
+            if(data['extension_attributes'] && data['extension_attributes'] != null && data['extension_attributes'] != 'null'){
+                var extensionsdata = JSON.parse(data['extension_attributes']);
+                // Set count of extension attributes
+                $('#jamf-extensions-cnt').text(extensionsdata.length);
+                // Make the table framework
+                var extensionsrows = '<h4>'+i18n.t('jamf.extension_attributes')+'<a style="float: right;" class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/computerExtensionAttributes.html"><i class="fa fa-cog"></i> '+i18n.t("jamf.extension_attributes")+'</a></h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.attribute')+'</th>'
+                if (parseInt(extensionsdata.length) == 0 ){
+                        extensionsrows = extensionsrows+'<tr><td>'+i18n.t('jamf.no_extension_attributes')+'</td><td></td></tr>';   
+                } else {
+                    $.each(extensionsdata, function(i,d){
+                        // Generate rows from data
+                        extensionsrows = extensionsrows + '<tr><td><a target="_blank" href="'+jamf_server+'/computerExtensionAttributes.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td><td>'+d['value']+'</td></tr>';
+                    })
+                }
+                $('#Jamf-ExtensionAttributes-Table').html(extensionsrows+"</tbody></table>") // Close table framework and assign to HTML ID
             }
-            $('#Jamf-ExtensionAttributes-Table').html(extensionsrows+"</tbody></table>") // Close table framework and assign to HTML ID
-
 
             // Make Profiles table
-            var profilesdata = JSON.parse(data['configuration_profiles']);
-            // Set count of installed profiles
-            $('#jamf-profs-cnt').text(profilesdata.length);
-            $('#jamf-profs-cnt2').text(profilesdata.length);
-            // Make the table framework
-            var configprofilesrows = '<h4>'+i18n.t('jamf.profiles_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
-            // Make the table framework
-            if (parseInt(profilesdata.length) == 0 ){
-                configprofilesrows = configprofilesrows+'<tr><td>'+i18n.t('jamf.no_profiles')+'</td></tr>';   
-            } else {
-                $.each(profilesdata, function(i,d){
-                    // Set yes/no
-                    if (d['user_removable'] == 1){
-                        var userremovebool = i18n.t('yes')
-                    } else {
-                        var userremovebool = i18n.t('no')
-                    }
-                    // Set level
-                    if (d['level'] == 'computer'){
-                        var profilelevel = i18n.t('jamf.computer')
-                    } else if (d['level'] == 'user') {
-                        var profilelevel = i18n.t('user.user')
-                    } else {
-                        var profilelevel = d['level']
-                    }
-                    // Generate rows from data
-                    configprofilesrows = configprofilesrows + '<tr><td><a target="_blank" href="'+jamf_server+'/OSXConfigurationProfiles.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td></tr>';
+            if(data['configuration_profiles'] && data['configuration_profiles'] != null && data['configuration_profiles'] != 'null'){
+                var profilesdata = JSON.parse(data['configuration_profiles']);
+                // Set count of installed profiles
+                $('#jamf-profs-cnt').text(profilesdata.length);
+                $('#jamf-profs-cnt2').text(profilesdata.length);
+                // Make the table framework
+                var configprofilesrows = '<h4>'+i18n.t('jamf.profiles_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                // Make the table framework
+                if (parseInt(profilesdata.length) == 0 ){
+                    configprofilesrows = configprofilesrows+'<tr><td>'+i18n.t('jamf.no_profiles')+'</td></tr>';   
+                } else {
+                    $.each(profilesdata, function(i,d){
+                        // Set yes/no
+                        if (d['user_removable'] == 1){
+                            var userremovebool = i18n.t('yes')
+                        } else {
+                            var userremovebool = i18n.t('no')
+                        }
+                        // Set level
+                        if (d['level'] == 'computer'){
+                            var profilelevel = i18n.t('jamf.computer')
+                        } else if (d['level'] == 'user') {
+                            var profilelevel = i18n.t('user.user')
+                        } else {
+                            var profilelevel = d['level']
+                        }
+                        // Generate rows from data
+                        configprofilesrows = configprofilesrows + '<tr><td><a target="_blank" href="'+jamf_server+'/OSXConfigurationProfiles.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td></tr>';
 
-                })
+                    })
+                }
+                $('#Jamf-ConfigurationProfiles-Table').html(configprofilesrows+"</tbody></table>") // Close table framework and assign to HTML ID
             }
-            $('#Jamf-ConfigurationProfiles-Table').html(configprofilesrows+"</tbody></table>") // Close table framework and assign to HTML ID
-
 
             // Management Commands
-            var commandsjson = JSON.parse(data['commands_history']);
-            var commandscompleted = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.command')+'</th><th>'+i18n.t('jamf.date_completed')+'</th><th>'+i18n.t('jamf.username')+'</th>'
-            var commandsfailed = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.command')+'</th><th>'+i18n.t('jamf.status')+'</th><th>'+i18n.t('jamf.date_issued')+'</th><th>'+i18n.t('jamf.date_last_push')+'</th><th>'+i18n.t('jamf.username')+'</th>'
-            var commandspending = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.command')+'</th><th>'+i18n.t('jamf.status')+'</th><th>'+i18n.t('jamf.date_issued')+'</th><th>'+i18n.t('jamf.date_last_push')+'</th><th>'+i18n.t('jamf.username')+'</th>'
-            if (parseInt(commandsjson['completed'].length) == 0 ){
-                commandscompleted = commandscompleted+'<tr><td>'+i18n.t('jamf.no_completed_commands')+'</td><td></td><td></td></tr>';   
-            } else {
-                $.each(commandsjson['completed'], function(i,d){ // Process completed commands
-                // Fix date/time
-                var timehuman = '<span title="'+moment(parseInt(d['completed_epoch'])).fromNow()+'">'+moment(parseInt(d['completed_epoch'])).format('llll')+'</span>'
-                // Generate rows from data
-                commandscompleted = commandscompleted+'<tr><td>'+d['name']+'</td><td>'+timehuman+'</td><td>'+d['username']+'</td></tr>';
-                })
-            }
-            if (parseInt(commandsjson['failed'].length) == 0 ){
-                commandsfailed = commandsfailed+'<tr><td>'+i18n.t('jamf.no_failed_commands')+'</td><td></td><td></td><td></td><td></td></tr>';   
-            } else {
-                $.each(commandsjson['failed'], function(i,d){ // Process failed commands
+            if (data['commands_history'] && data['commands_history'] != null && data['commands_history'] != 'null'){
+                var commandsjson = JSON.parse(data['commands_history']);
+                var commandscompleted = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.command')+'</th><th>'+i18n.t('jamf.date_completed')+'</th><th>'+i18n.t('jamf.username')+'</th>'
+                var commandsfailed = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.command')+'</th><th>'+i18n.t('jamf.status')+'</th><th>'+i18n.t('jamf.date_issued')+'</th><th>'+i18n.t('jamf.date_last_push')+'</th><th>'+i18n.t('jamf.username')+'</th>'
+                var commandspending = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.command')+'</th><th>'+i18n.t('jamf.status')+'</th><th>'+i18n.t('jamf.date_issued')+'</th><th>'+i18n.t('jamf.date_last_push')+'</th><th>'+i18n.t('jamf.username')+'</th>'
+                if (parseInt(commandsjson['completed'].length) == 0 ){
+                    commandscompleted = commandscompleted+'<tr><td>'+i18n.t('jamf.no_completed_commands')+'</td><td></td><td></td></tr>';   
+                } else {
+                    $.each(commandsjson['completed'], function(i,d){ // Process completed commands
                     // Fix date/time
-                    var timehuman = '<span title="'+moment(parseInt(d['issued_epoch'])).fromNow()+'">'+moment(parseInt(d['issued_epoch'])).format('llll')+'</span>'
-                    var timehuman2 = '<span title="'+moment(parseInt(d['last_push_epoch'])).fromNow()+'">'+moment(parseInt(d['last_push_epoch'])).format('llll')+'</span>'
+                    var timehuman = '<span title="'+moment(parseInt(d['completed_epoch'])).fromNow()+'">'+moment(parseInt(d['completed_epoch'])).format('llll')+'</span>'
                     // Generate rows from data
-                    commandsfailed = commandsfailed+'<tr><td>'+d['name']+'</td><td>'+d['status']+'</td><td>'+timehuman+'</td><td>'+timehuman2+'</td><td>'+d['username']+'</td></tr>';
-                })
+                    commandscompleted = commandscompleted+'<tr><td>'+d['name']+'</td><td>'+timehuman+'</td><td>'+d['username']+'</td></tr>';
+                    })
+                }
+                if (parseInt(commandsjson['failed'].length) == 0 ){
+                    commandsfailed = commandsfailed+'<tr><td>'+i18n.t('jamf.no_failed_commands')+'</td><td></td><td></td><td></td><td></td></tr>';   
+                } else {
+                    $.each(commandsjson['failed'], function(i,d){ // Process failed commands
+                        // Fix date/time
+                        var timehuman = '<span title="'+moment(parseInt(d['issued_epoch'])).fromNow()+'">'+moment(parseInt(d['issued_epoch'])).format('llll')+'</span>'
+                        var timehuman2 = '<span title="'+moment(parseInt(d['last_push_epoch'])).fromNow()+'">'+moment(parseInt(d['last_push_epoch'])).format('llll')+'</span>'
+                        // Generate rows from data
+                        commandsfailed = commandsfailed+'<tr><td>'+d['name']+'</td><td>'+d['status']+'</td><td>'+timehuman+'</td><td>'+timehuman2+'</td><td>'+d['username']+'</td></tr>';
+                    })
+                }
+                if (parseInt(commandsjson['pending'].length) == 0 ){
+                        commandspending = commandspending+'<tr><td>'+i18n.t('jamf.no_pending_commands')+'</td><td></td><td></td><td></td><td></td></tr>';   
+                } else {
+                    $.each(commandsjson['pending'], function(i,d){ // Process pending commands
+                        // Fix date/time
+                        var timehuman = '<span title="'+moment(parseInt(d['issued_epoch'])).fromNow()+'">'+moment(parseInt(d['issued_epoch'])).format('llll')+'</span>'
+                        var timehuman2 = '<span title="'+moment(parseInt(d['last_push_epoch'])).fromNow()+'">'+moment(parseInt(d['last_push_epoch'])).format('llll')+'</span>'
+                        // Generate rows from data
+                        commandspending = commandspending+'<tr><td>'+d['name']+'</td><td>'+d['status']+'</td><td>'+timehuman+'</td><td>'+timehuman2+'</td><td>'+d['username']+'</td></tr>';
+                    })
+                }
+                $('#jamf_managementhistory_completed_button').text(data['comands_completed']+' '+i18n.t('jamf.completed_commands')); // Close table framework and assign to HTML ID 
+                $('#jamf_managementhistory_failed_button').text(data['comands_failed']+' '+i18n.t('jamf.failed_commands')); // Close table framework and assign to HTML ID 
+                $('#jamf_managementhistory_pending_button').text(data['comands_pending']+' '+i18n.t('jamf.pending_commands')); // Close table framework and assign to HTML ID 
+                $('#Jamf-ManagementHistory-Completed-Table').html(commandscompleted) // Close table framework and assign to HTML ID            
+                $('#Jamf-ManagementHistory-Failed-Table').html(commandsfailed) // Close table framework and assign to HTML ID            
+                $('#Jamf-ManagementHistory-Pending-Table').html(commandspending) // Close table framework and assign to HTML ID            
+                $('#Jamf-ManagementCommands-Table').html('<h4>'+i18n.t('jamf.pending_commands')+'&nbsp;&nbsp;<span class="badge">'+data['comands_pending']+'</h4>'+commandspending+"</tbody></table><h4>"+i18n.t('jamf.failed_commands')+'&nbsp;&nbsp;<span class="badge">'+data['comands_failed']+'</span>'+'</h4>'+commandsfailed+"</tbody></table>") // Close table framework and assign to HTML ID
             }
-            if (parseInt(commandsjson['pending'].length) == 0 ){
-                    commandspending = commandspending+'<tr><td>'+i18n.t('jamf.no_pending_commands')+'</td><td></td><td></td><td></td><td></td></tr>';   
-            } else {
-                $.each(commandsjson['pending'], function(i,d){ // Process pending commands
-                    // Fix date/time
-                    var timehuman = '<span title="'+moment(parseInt(d['issued_epoch'])).fromNow()+'">'+moment(parseInt(d['issued_epoch'])).format('llll')+'</span>'
-                    var timehuman2 = '<span title="'+moment(parseInt(d['last_push_epoch'])).fromNow()+'">'+moment(parseInt(d['last_push_epoch'])).format('llll')+'</span>'
-                    // Generate rows from data
-                    commandspending = commandspending+'<tr><td>'+d['name']+'</td><td>'+d['status']+'</td><td>'+timehuman+'</td><td>'+timehuman2+'</td><td>'+d['username']+'</td></tr>';
-                })
-            }
-            $('#jamf_managementhistory_completed_button').text(data['comands_completed']+' '+i18n.t('jamf.completed_commands')); // Close table framework and assign to HTML ID 
-            $('#jamf_managementhistory_failed_button').text(data['comands_failed']+' '+i18n.t('jamf.failed_commands')); // Close table framework and assign to HTML ID 
-            $('#jamf_managementhistory_pending_button').text(data['comands_pending']+' '+i18n.t('jamf.pending_commands')); // Close table framework and assign to HTML ID 
-            $('#Jamf-ManagementHistory-Completed-Table').html(commandscompleted) // Close table framework and assign to HTML ID            
-            $('#Jamf-ManagementHistory-Failed-Table').html(commandsfailed) // Close table framework and assign to HTML ID            
-            $('#Jamf-ManagementHistory-Pending-Table').html(commandspending) // Close table framework and assign to HTML ID            
-            $('#Jamf-ManagementCommands-Table').html('<h4>'+i18n.t('jamf.pending_commands')+'&nbsp;&nbsp;<span class="badge">'+data['comands_pending']+'</h4>'+commandspending+"</tbody></table><h4>"+i18n.t('jamf.failed_commands')+'&nbsp;&nbsp;<span class="badge">'+data['comands_failed']+'</span>'+'</h4>'+commandsfailed+"</tbody></table>") // Close table framework and assign to HTML ID
-
 
             // Make Policies table
-            var policiesdata = JSON.parse(data['policies_management']);
-            // Set count of policies
-            $('#jamf-policies-cnt').text(policiesdata.length);
-            // Make the table framework
-            var policiesrows = '<h4>'+i18n.t('jamf.policies_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.triggers')+'</th>'
-            if (parseInt(policiesdata.length) == 0 ){
-                    policiesrows = policiesrows+'<tr><td>'+i18n.t('jamf.no_policies')+'</td></tr>';   
-            } else {
-                $.each(policiesdata, function(i,d){
-                    // Generate rows from data
-                    policiesrows = policiesrows + '<tr><td><a target="_blank" href="'+jamf_server+'/policies.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td><td>'+d['triggers']+'</td></tr>';
-                })
+            if (data['policies_management'] && data['policies_management'] != null && data['policies_management'] != 'null'){
+                var policiesdata = JSON.parse(data['policies_management']);
+                // Set count of policies
+                $('#jamf-policies-cnt').text(policiesdata.length);
+                // Make the table framework
+                var policiesrows = '<h4>'+i18n.t('jamf.policies_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.triggers')+'</th>'
+                if (parseInt(policiesdata.length) == 0 ){
+                        policiesrows = policiesrows+'<tr><td>'+i18n.t('jamf.no_policies')+'</td></tr>';   
+                } else {
+                    $.each(policiesdata, function(i,d){
+                        // Generate rows from data
+                        policiesrows = policiesrows + '<tr><td><a target="_blank" href="'+jamf_server+'/policies.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td><td>'+d['triggers']+'</td></tr>';
+                    })
+                }
+                $('#Jamf-Policies-Table').html(policiesrows+"</tbody></table>") // Close table framework and assign to HTML ID
             }
-            $('#Jamf-Policies-Table').html(policiesrows+"</tbody></table>") // Close table framework and assign to HTML ID
-                    
-                    
+
             // Make eBooks table
-            var ebooksdata = JSON.parse(data['ebooks_management']);
-            // Set count of eBooks
-            $('#jamf-ebooks-cnt').text(ebooksdata.length);
-            // Make the table framework
-            var ebooksrows = '<h4>'+i18n.t('jamf.ebooks_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
-            if (parseInt(ebooksdata.length) == 0 ){
-                    ebooksrows = ebooksrows+'<tr><td>'+i18n.t('jamf.no_ebooks')+'</td></tr>';   
-            } else {
-                $.each(ebooksdata, function(i,d){
-                    // Generate rows from data
-                    ebooksrows = ebooksrows + '<tr><td><a target="_blank" href="'+jamf_server+'/eBooks.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td></tr>';
-                })
+            if(data['ebooks_management'] && data['ebooks_management'] != null && data['ebooks_management'] != 'null'){
+                var ebooksdata = JSON.parse(data['ebooks_management']);
+                // Set count of eBooks
+                $('#jamf-ebooks-cnt').text(ebooksdata.length);
+                // Make the table framework
+                var ebooksrows = '<h4>'+i18n.t('jamf.ebooks_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                if (parseInt(ebooksdata.length) == 0 ){
+                        ebooksrows = ebooksrows+'<tr><td>'+i18n.t('jamf.no_ebooks')+'</td></tr>';   
+                } else {
+                    $.each(ebooksdata, function(i,d){
+                        // Generate rows from data
+                        ebooksrows = ebooksrows + '<tr><td><a target="_blank" href="'+jamf_server+'/eBooks.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td></tr>';
+                    })
+                }
+                $('#Jamf-eBooks-Table').html(ebooksrows+"</tbody></table>") // Close table framework and assign to HTML ID
             }
-            $('#Jamf-eBooks-Table').html(ebooksrows+"</tbody></table>") // Close table framework and assign to HTML ID
-                        
-                
+
             // Make Mac App Store table
-            var macappssdata = JSON.parse(data['mac_app_store_applications_history']);
-            // Set count of Mac App Store Apps
-            $('#jamf-macapps-cnt').text(macappssdata['installed'].length);
-            // Make the table framework
-            var macappsrows = '<h4>'+i18n.t('jamf.mac_apps_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
-            if (parseInt(macappssdata.length) == 0 ){
-                    macappsrows = macappsrows+'<tr><td>'+i18n.t('jamf.no_mac_apps')+'</td></tr>';   
-            } else {
-                $.each(macappssdata['installed'], function(i,d){
-                    // Generate rows from data
-                    if (d["id"] !== undefined) {
-                        macappsrows = macappsrows + '<tr><td><a target="_blank" href="'+jamf_server+'/macApps.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td></tr>';
-                    } else {
-                        macappsrows = macappsrows + '<tr><td>'+d['name']+'</td></tr>';
-                    }
-                })
+            if(data['mac_app_store_applications_history'] && data['mac_app_store_applications_history'] != null && data['mac_app_store_applications_history'] != 'null'){
+                var macappssdata = JSON.parse(data['mac_app_store_applications_history']);
+                // Set count of Mac App Store Apps
+                $('#jamf-macapps-cnt').text(macappssdata['installed'].length);
+                // Make the table framework
+                var macappsrows = '<h4>'+i18n.t('jamf.mac_apps_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                if (parseInt(macappssdata.length) == 0 ){
+                        macappsrows = macappsrows+'<tr><td>'+i18n.t('jamf.no_mac_apps')+'</td></tr>';   
+                } else {
+                    $.each(macappssdata['installed'], function(i,d){
+                        // Generate rows from data
+                        if (d["id"] !== undefined) {
+                            macappsrows = macappsrows + '<tr><td><a target="_blank" href="'+jamf_server+'/macApps.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td></tr>';
+                        } else {
+                            macappsrows = macappsrows + '<tr><td>'+d['name']+'</td></tr>';
+                        }
+                    })
+                }
+                $('#Jamf-MacApps-Table').html(macappsrows+"</tbody></table>") // Close table framework and assign to HTML ID
             }
-            $('#Jamf-MacApps-Table').html(macappsrows+"</tbody></table>") // Close table framework and assign to HTML ID
-                        
                 
             // Make Managed Preferences table
-            var manprefsdata = JSON.parse(data['managed_preference_profiles_management']);
-            // Set count of Managed Preferences
-            $('#jamf-manprefs-cnt').text(manprefsdata.length);
-            // Make the table framework
-            var manprefsrows = '<h4>'+i18n.t('jamf.preferences_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
-            if (parseInt(manprefsdata.length) == 0 ){
-                    manprefsrows = manprefsrows+'<tr><td>'+i18n.t('jamf.no_preferences')+'</td></tr>';   
-            } else {
-                $.each(manprefsdata, function(i,d){
-                    // Generate rows from data
-                    manprefsrows = manprefsrows + '<tr><td>'+d['name']+'</td></tr>';
-                })
+            if(data['managed_preference_profiles_management'] && data['managed_preference_profiles_management'] != null && data['managed_preference_profiles_management'] != 'null'){
+                var manprefsdata = JSON.parse(data['managed_preference_profiles_management']);
+                // Set count of Managed Preferences
+                $('#jamf-manprefs-cnt').text(manprefsdata.length);
+                // Make the table framework
+                var manprefsrows = '<h4>'+i18n.t('jamf.preferences_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                if (parseInt(manprefsdata.length) == 0 ){
+                        manprefsrows = manprefsrows+'<tr><td>'+i18n.t('jamf.no_preferences')+'</td></tr>';   
+                } else {
+                    $.each(manprefsdata, function(i,d){
+                        // Generate rows from data
+                        manprefsrows = manprefsrows + '<tr><td>'+d['name']+'</td></tr>';
+                    })
+                }
+                $('#Jamf-ManagedPreferences-Table').html(manprefsrows+"</tbody></table>") // Close table framework and assign to HTML ID   
             }
-            $('#Jamf-ManagedPreferences-Table').html(manprefsrows+"</tbody></table>") // Close table framework and assign to HTML ID   
-                
                 
             // Make Restricted Software table
-            var restrictedsoftdata = JSON.parse(data['restricted_software_management']);
-            // Set count of Restricted Software
-            $('#jamf-restsoft-cnt').text(restrictedsoftdata.length);
-            // Make the table framework
-            var restrictedsoftrows = '<h4>'+i18n.t('jamf.restricted_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
-            if (parseInt(restrictedsoftdata.length) == 0 ){
-                    restrictedsoftrows = restrictedsoftrows+'<tr><td>'+i18n.t('jamf.no_restricted')+'</td></tr>';   
-            } else {
-                $.each(restrictedsoftdata, function(i,d){
-                    // Generate rows from data
-                    restrictedsoftrows = restrictedsoftrows + '<tr><td><a target="_blank" href="'+jamf_server+'/restrictedSoftware.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td></tr>';
-                })
+            if(data['restricted_software_management'] && data['restricted_software_management'] != null && data['restricted_software_management'] != 'null'){
+                var restrictedsoftdata = JSON.parse(data['restricted_software_management']);
+                // Set count of Restricted Software
+                $('#jamf-restsoft-cnt').text(restrictedsoftdata.length);
+                // Make the table framework
+                var restrictedsoftrows = '<h4>'+i18n.t('jamf.restricted_scope')+'</h4><table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                if (parseInt(restrictedsoftdata.length) == 0 ){
+                        restrictedsoftrows = restrictedsoftrows+'<tr><td>'+i18n.t('jamf.no_restricted')+'</td></tr>';   
+                } else {
+                    $.each(restrictedsoftdata, function(i,d){
+                        // Generate rows from data
+                        restrictedsoftrows = restrictedsoftrows + '<tr><td><a target="_blank" href="'+jamf_server+'/restrictedSoftware.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td></tr>';
+                    })
+                }
+                $('#Jamf-RestrictedSoftware-Table').html(restrictedsoftrows+"</tbody></table>") // Close table framework and assign to HTML ID
             }
-            $('#Jamf-RestrictedSoftware-Table').html(restrictedsoftrows+"</tbody></table>") // Close table framework and assign to HTML ID
-                    
     
             // Smart Groups Table
-            var groupssmartdata = JSON.parse(data['smart_groups_management']);
-            // Set count of Smart Groups
-            $('#jamf_groups_smart_button').text(i18n.t('jamf.smart_groups_management')+' ('+groupssmartdata.length+')');
-            // Make the table framework
-            var groupssmartrows = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
-            if (parseInt(groupssmartdata.length) == 0 ){
-                    groupssmartrows = groupssmartrows+'<tr><td>'+i18n.t('jamf.no_smart_groups')+'</td></tr>';   
-            } else {
-                $.each(groupssmartdata, function(i,d){
-                    // Generate rows from data
-                    groupssmartrows = groupssmartrows + '<tr><td><a target="_blank" href="'+jamf_server+'/smartComputerGroups.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td></tr>';
-                })
+            if(data['smart_groups_management'] && data['smart_groups_management'] != null && data['smart_groups_management'] != 'null'){
+                var groupssmartdata = JSON.parse(data['smart_groups_management']);
+                // Set count of Smart Groups
+                $('#jamf_groups_smart_button').text(i18n.t('jamf.smart_groups_management')+' ('+groupssmartdata.length+')');
+                // Make the table framework
+                var groupssmartrows = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                if (parseInt(groupssmartdata.length) == 0 ){
+                        groupssmartrows = groupssmartrows+'<tr><td>'+i18n.t('jamf.no_smart_groups')+'</td></tr>';   
+                } else {
+                    $.each(groupssmartdata, function(i,d){
+                        // Generate rows from data
+                        groupssmartrows = groupssmartrows + '<tr><td><a target="_blank" href="'+jamf_server+'/smartComputerGroups.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td></tr>';
+                    })
+                }
+                $('#Jamf-Groups-Smart-Table').html(groupssmartrows+"</tbody></table>") // Close table framework and assign to HTML ID            
             }
-            $('#Jamf-Groups-Smart-Table').html(groupssmartrows+"</tbody></table>") // Close table framework and assign to HTML ID            
-                
                 
             // Static Groups Table
-            var groupsstaticdata = JSON.parse(data['static_groups_management']);
-            // Set count of Static Groups
-            $('#jamf_groups_static_button').text(i18n.t('jamf.static_groups_management')+' ('+groupsstaticdata.length+')');
-            // Make the table framework
-            var groupsstaticrows = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
-            if (parseInt(groupsstaticdata.length) == 0 ){
-                    groupsstaticrows = groupsstaticrows+'<tr><td>'+i18n.t('jamf.no_static_groups')+'</td></tr>';   
-            } else {
-                $.each(groupsstaticdata, function(i,d){
-                    // Generate rows from data
-                    groupsstaticrows = groupsstaticrows + '<tr><td><a target="_blank" href="'+jamf_server+'/staticComputerGroups.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td></tr>';
-                })
+            if(data['static_groups_management'] && data['static_groups_management'] != null && data['static_groups_management'] != 'null'){
+                var groupsstaticdata = JSON.parse(data['static_groups_management']);
+                // Set count of Static Groups
+                $('#jamf_groups_static_button').text(i18n.t('jamf.static_groups_management')+' ('+groupsstaticdata.length+')');
+                // Make the table framework
+                var groupsstaticrows = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th>'
+                if (parseInt(groupsstaticdata.length) == 0 ){
+                        groupsstaticrows = groupsstaticrows+'<tr><td>'+i18n.t('jamf.no_static_groups')+'</td></tr>';   
+                } else {
+                    $.each(groupsstaticdata, function(i,d){
+                        // Generate rows from data
+                        groupsstaticrows = groupsstaticrows + '<tr><td><a target="_blank" href="'+jamf_server+'/staticComputerGroups.html?id='+d["id"]+'&o=r'+'">'+d['name']+'</a></td></tr>';
+                    })
+                }
+                $('#Jamf-Groups-Static-Table').html(groupsstaticrows+"</tbody></table>") // Close table framework and assign to HTML ID
             }
-            $('#Jamf-Groups-Static-Table').html(groupsstaticrows+"</tbody></table>") // Close table framework and assign to HTML ID
-            
             
             // Software Titles Table
-            var softwaretitlesdata = JSON.parse(data['patch_reporting_software_titles_management']);
-            // Set count of Software Titles
-            if (softwaretitlesdata.length !== undefined) {
-                var softwaretitlescount = softwaretitlesdata.length;
-            } else {
-                var softwaretitlescount = 0
+            if(data['patch_reporting_software_titles_management'] && data['patch_reporting_software_titles_management'] != null && data['patch_reporting_software_titles_management'] != 'null'){
+                var softwaretitlesdata = JSON.parse(data['patch_reporting_software_titles_management']);
+                // Set count of Software Titles
+                if (softwaretitlesdata.length !== undefined) {
+                    var softwaretitlescount = softwaretitlesdata.length;
+                } else {
+                    var softwaretitlescount = 0
+                }
+                $('#jamf_software_titles_button').text(i18n.t('jamf.software_titles')+' ('+softwaretitlescount+')');
+                // Make the table framework
+                var softwaretitlesrows = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.latest_version')+'</th><th>'+i18n.t('jamf.installed_version')+'</th>'
+                if (softwaretitlescount == 0 ){
+                        softwaretitlesrows = softwaretitlesrows+'<tr><td>'+i18n.t('jamf.no_software_title')+'</td><td></td><td></td></tr>';   
+                } else {
+                    $.each(softwaretitlesdata, function(i,d){
+                        // Generate rows from data
+                        softwaretitlesrows = softwaretitlesrows + '<tr><td>'+d['name']+'</td><td>'+d['latest_version']+'</td><td>'+d['installed_version']+'</td></tr>';
+                    })
+                }
+                $('#Jamf-Software-Titles-Table').html(softwaretitlesrows+"</tbody></table>") // Close table framework and assign to HTML ID            
             }
-            $('#jamf_software_titles_button').text(i18n.t('jamf.software_titles')+' ('+softwaretitlescount+')');
-            // Make the table framework
-            var softwaretitlesrows = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.latest_version')+'</th><th>'+i18n.t('jamf.installed_version')+'</th>'
-            if (softwaretitlescount == 0 ){
-                    softwaretitlesrows = softwaretitlesrows+'<tr><td>'+i18n.t('jamf.no_software_title')+'</td><td></td><td></td></tr>';   
-            } else {
-                $.each(softwaretitlesdata, function(i,d){
-                    // Generate rows from data
-                    softwaretitlesrows = softwaretitlesrows + '<tr><td>'+d['name']+'</td><td>'+d['latest_version']+'</td><td>'+d['installed_version']+'</td></tr>';
-                })
-            }
-            $('#Jamf-Software-Titles-Table').html(softwaretitlesrows+"</tbody></table>") // Close table framework and assign to HTML ID            
-            
             
             // Patch Policies Table
-            var patchpoliciesdata = JSON.parse(data['patch_policies_management']);
-            // Set count of Patch Policies
-            if (patchpoliciesdata.length !== undefined) {
-                var patchpoliciescount = patchpoliciesdata.length;
-            } else {
-                var patchpoliciescount = 0
+            if(data['patch_policies_management'] && data['patch_policies_management'] != null && data['patch_policies_management'] != 'null'){
+                var patchpoliciesdata = JSON.parse(data['patch_policies_management']);
+                // Set count of Patch Policies
+                if (patchpoliciesdata.length !== undefined) {
+                    var patchpoliciescount = patchpoliciesdata.length;
+                } else {
+                    var patchpoliciescount = 0
+                }
+                $('#jamf_patch_policies_button').text(i18n.t('jamf.patch_policies')+' ('+patchpoliciescount+')');
+                // Make the table framework
+                var patchpoliciesrows = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.id')+'</th>'
+                if (patchpoliciescount == 0 ){
+                        patchpoliciesrows = patchpoliciesrows+'<tr><td>'+i18n.t('jamf.no_patch_policies')+'</td><td></td>';   
+                } else {
+                    $.each(patchpoliciesdata, function(i,d){
+                        // Generate rows from data
+                        patchpoliciesrows = patchpoliciesrows + '<tr><td>'+d['name']+'</td><td>'+d['id']+'</td></tr>';
+                    })
+                }
+                $('#Jamf-Patch-Policies-Table').html(patchpoliciesrows+"</tbody></table>") // Close table framework and assign to HTML ID
             }
-            $('#jamf_patch_policies_button').text(i18n.t('jamf.patch_policies')+' ('+patchpoliciescount+')');
-            // Make the table framework
-            var patchpoliciesrows = '<table class="table table-striped table-condensed"><tbody><th>'+i18n.t('jamf.name')+'</th><th>'+i18n.t('jamf.id')+'</th>'
-            if (patchpoliciescount == 0 ){
-                    patchpoliciesrows = patchpoliciesrows+'<tr><td>'+i18n.t('jamf.no_patch_policies')+'</td><td></td>';   
-            } else {
-                $.each(patchpoliciesdata, function(i,d){
-                    // Generate rows from data
-                    patchpoliciesrows = patchpoliciesrows + '<tr><td>'+d['name']+'</td><td>'+d['id']+'</td></tr>';
-                })
-            }
-            $('#Jamf-Patch-Policies-Table').html(patchpoliciesrows+"</tbody></table>") // Close table framework and assign to HTML ID
-
 
 			// Add strings
 			$('#jamf_serial_number').text(data['serial_number']);
