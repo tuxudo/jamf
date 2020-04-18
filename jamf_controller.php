@@ -202,8 +202,8 @@ class jamf_controller extends Module_controller
          $obj = new View();
          $queryobj = new Jamf_model();
          $currentdate = date_timestamp_get(date_create());
-         $week = $currentdate - 604800;
-         $month = $currentdate - 2592000;
+         $week = ($currentdate - 604800)*1000;
+         $month = ($currentdate - 2592000)*1000;
         
          $sql = "SELECT COUNT( CASE WHEN ".$month." >= last_contact_time_epoch THEN 1 END) AS red,
 						COUNT( CASE WHEN ".$week." >= last_contact_time_epoch AND last_contact_time_epoch > ".$month." THEN 1 END) AS yellow,
