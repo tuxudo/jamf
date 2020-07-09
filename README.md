@@ -5,6 +5,8 @@ Jamf integration for MunkiReport. The client tab has many sub-tabs that allow fo
 
 The Jamf Admin tab within the Admin dropdown menu allows an administrator to check if MunkiReport is able to access their Jamf server, how it is configured, and what permissions it has. There is also a button that allows the administrator to pull Jamf data for all Macs within MunkiReport. This process takes about 3 minutes for 500 Macs. 
 
+The php-curl module is required for use with this module. You can install it on Ubuntu/Debian with `sudo apt-get install php-curl`
+
 
 Table Schema
 ---
