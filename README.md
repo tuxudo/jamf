@@ -7,6 +7,17 @@ The Jamf Admin tab within the Admin dropdown menu allows an administrator to che
 
 The php-curl module is required for use with this module. You can install it on Ubuntu/Debian with `sudo apt-get install php-curl`
 
+## Configuration
+
+To enable the module add the following information to the `.env` file.
+
+```sh
+JAMF_ENABLE="TRUE"
+JAMF_SERVER="https://domain.jamfcloud.com/"
+JAMF_USERNAME="read_only_user"
+JAMF_PASSWORD="password"
+JAMF_VERIFY_SSL="TRUE"
+```
 
 Table Schema
 ---
