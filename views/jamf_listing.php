@@ -59,10 +59,10 @@ new Jamf_model;
 	$(document).on('appReady', function(e, lang) {
 		// Get column names from data attribute
 		var columnDefs = [],
-            col = 0; // Column counter
+           	col = 0; // Column counter
 		$('.table th').map(function(){
-              columnDefs.push({name: $(this).data('colname'), targets: col});
-              col++;
+              		columnDefs.push({name: $(this).data('colname'), targets: col});
+             		col++;
 		});
 	    oTable = $('.table').dataTable( {
 	        columnDefs: columnDefs,
@@ -140,7 +140,7 @@ new Jamf_model;
 	        	// Make serial number in second column link to Jamf
 	        	var serial=$('td:eq(1)', nRow).html();
 	        	var jamf_id=$('td:eq(20)', nRow).html();
-                var jamf_server = "<?php echo rtrim(conf('jamf_server'), '/'); ?>"; // Get the Jamf server address
+	                var jamf_server = "<?php configAppendFile(__DIR__ . '/../config.php'); echo rtrim(conf('jamf_server'), '/'); ?>"; // Get the Jamf server address
 	        	var link = '<a class="btn btn-default btn-xs" href="'+jamf_server+'/computers.html?id='+jamf_id+'&o=r&v=inventory" target="_blank" title="'+i18n.t('jamf.view_in_jamf')+'">'+serial+'</a>';
 	        	$('td:eq(1)', nRow).html(link);
 
