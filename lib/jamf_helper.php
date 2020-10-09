@@ -348,16 +348,51 @@ class Jamf_helper
             $Jamf_model->policies_management = json_encode($json->computer_management->policies); // Encode the policies array for processing by the client tab
             $Jamf_model->smart_groups_management = json_encode($json->computer_management->smart_groups); // Encode the smart_groups array for processing by the client tab
             $Jamf_model->static_groups_management = json_encode($json->computer_management->static_groups); // Encode the static_groups array for processing by the client tab
-
-            if (isset($json->computer_management->patch_reporting)) {
-                $Jamf_model->patch_reporting_software_titles_management = json_encode($json->computer_management->patch_reporting->patch_reporting_software_titles);
-                $Jamf_model->patch_policies_management = json_encode($json->computer_management->patch_reporting->patch_policies);
-            } else {
-                $Jamf_model->patch_reporting_software_titles_management = "[]";
-                $Jamf_model->patch_policies_management = "[]";
-            }
         }
 
+            // Process patches section separately as XML because of limitations (bug?) with JSON format
+            // Get computer data from Jamf
+            $url = "{$jamf_server}/JSSResource/computermanagement/serialnumber/{$Jamf_model->serial_number}";
+            $jamf_patching_xml_result = $this->get_jamf_url_xml($url);
+
+            $xml = simplexml_load_string($jamf_patching_xml_result);
+            if (isset($xml->patch_reporting)) {
+              $patch_title_array = []; // Create patch reporting array
+              foreach ($xml->patch_reporting->patch_reporting_software_titles->title as $patches) {
+                $software_titles = []; // Create software titles array
+                // Fill in patch details
+                $software_titles["name"] = "$patches->name";
+                $software_titles['latest_version'] = "$patches->latest_version";
+                $software_titles['installed_version'] = "$patches->installed_version";
+                // Add patch to software titles array
+                $patch_title_array[] = $software_titles;
+              }
+              $Jamf_model->patch_reporting_software_titles_management = json_encode($patch_title_array); // Encode the patch title array for processing by the client tab
+            } else {
+              $Jamf_model->patch_reporting_software_titles_management = "[]";
+            }
+
+            // Process patches section separately as XML because of limitations (bug?) with JSON format
+            // Get computer data from Jamf
+            $url = "{$jamf_server}/JSSResource/computermanagement/serialnumber/{$Jamf_model->serial_number}";
+            $jamf_patch_policy_xml_result = $this->get_jamf_url_xml($url);
+
+            $xml = simplexml_load_string($jamf_patch_policy_xml_result);
+            if (isset($jxml->patch_reporting)) {
+              $patch_policy_array = []; // Create patch policy array
+              foreach ($xml->patch_reporting->patch_policies->patch_policy as $patch_policies) {
+                $patch_policy = []; // Create patch titles array
+                // Fill in patch details
+                $patch_policy['id'] = "$patch_policies->id";
+                $patch_policy["name"] = "$patch_policies->name";
+                // Add policy to policy array
+                $patch_policy_array[] = $patch_policy;
+            }
+              $Jamf_model->patch_policies_management = json_encode($patch_policy_array); // Encode the patch title array for processing by the client tab
+            } else {
+              $Jamf_model->patch_policies_management = "[]";
+        }
+                
         // Get computer history data from Jamf
         $url = "{$jamf_server}/JSSResource/computerhistory/serialnumber/{$Jamf_model->serial_number}";
         $jamf_computerhistory_result = $this->get_jamf_url($url);
