@@ -372,12 +372,7 @@ class Jamf_helper
               $Jamf_model->patch_reporting_software_titles_management = "[]";
             }
 
-            // Process patches section separately as XML because of limitations (bug?) with JSON format
-            // Get computer data from Jamf
-            $url = "{$jamf_server}/JSSResource/computermanagement/serialnumber/{$Jamf_model->serial_number}";
-            $jamf_patch_policy_xml_result = $this->get_jamf_url_xml($url);
-
-            $xml = simplexml_load_string($jamf_patch_policy_xml_result);
+                        $xml = simplexml_load_string($jamf_patch_policy_xml_result);
             if (isset($jxml->patch_reporting)) {
               $patch_policy_array = []; // Create patch policy array
               foreach ($xml->patch_reporting->patch_policies->patch_policy as $patch_policies) {
