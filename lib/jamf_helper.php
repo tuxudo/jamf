@@ -372,8 +372,6 @@ class Jamf_helper
               $Jamf_model->patch_reporting_software_titles_management = "[]";
             }
 
-                        $xml = simplexml_load_string($jamf_patch_policy_xml_result);
-            if (isset($jxml->patch_reporting)) {
               $patch_policy_array = []; // Create patch policy array
               foreach ($xml->patch_reporting->patch_policies->patch_policy as $patch_policies) {
                 $patch_policy = []; // Create patch titles array
