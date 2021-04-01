@@ -125,6 +125,24 @@ new Jamf_model;
                         // Clear global search
                         d.search.value = '';
                     }
+
+                    // comands_pending
+                    if(d.search.value.match(/^comands_pending > \d$/))
+                    {
+                        // Add column specific search
+                        d.columns[15].search.value = d.search.value.replace(/.*(\d)$/, '> $1');
+                        // Clear global search
+                        d.search.value = '';
+                    }
+
+                    // comands_failed
+                    if(d.search.value.match(/^comands_failed > \d$/))
+                    {
+                        // Add column specific search
+                        d.columns[16].search.value = d.search.value.replace(/.*(\d)$/, '> $1');
+                        // Clear global search
+                        d.search.value = '';
+                    }
                 }
             },
             dom: mr.dt.buttonDom,

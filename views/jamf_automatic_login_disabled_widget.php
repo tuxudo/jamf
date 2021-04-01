@@ -22,7 +22,7 @@ $(document).on('appUpdate', function(e, lang) {
     	}
 
 		var panel = $('#automatic-login-disabled-widget div.panel-body'),
-			baseUrl = appUrl + '/show/listing/jamf/jamf';
+			baseUrl = appUrl + '/show/listing/jamf/jamf#';
 		panel.empty();
                 
 		// Set statuses

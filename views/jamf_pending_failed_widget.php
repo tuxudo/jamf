@@ -22,13 +22,13 @@ $(document).on('appUpdate', function(e, lang) {
     	}
 
 		var panel = $('#pending-failed-widget div.panel-body'),
-			baseUrl = appUrl + '/show/listing/jamf/jamf';
+			baseUrl = appUrl + '/show/listing/jamf/jamf#';
 		panel.empty();
                 
 		// Set statuses
 		//panel.append(' <a href="'+baseUrl+'" class="btn btn-success"><span class="bigger-150">'+data.Completed+'</span><br>'+i18n.t('jamf.comands_completed')+'</a>');
-		panel.append(' <a href="'+baseUrl+'" class="btn btn-warning"><span class="bigger-150">'+data.Pending+'</span><br>'+i18n.t('jamf.comands_pending')+'</a>');
-		panel.append(' <a href="'+baseUrl+'" class="btn btn-danger"><span class="bigger-150">'+data.Failed+'</span><br>'+i18n.t('jamf.comands_failed')+'</a>');
+		panel.append(' <a href="'+baseUrl+'comands_pending > 0" class="btn btn-warning"><span class="bigger-150">'+data.Pending+'</span><br>'+i18n.t('jamf.comands_pending')+'</a>');
+		panel.append(' <a href="'+baseUrl+'comands_failed > 0" class="btn btn-danger"><span class="bigger-150">'+data.Failed+'</span><br>'+i18n.t('jamf.comands_failed')+'</a>');
 
     });
 });

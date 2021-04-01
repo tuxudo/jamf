@@ -22,7 +22,7 @@ $(document).on('appUpdate', function(e, lang) {
     	}
 
 		var panel = $('#mdm-capable-widget div.panel-body'),
-			baseUrl = appUrl + '/show/listing/jamf/jamf';
+			baseUrl = appUrl + '/show/listing/jamf/jamf#';
 		panel.empty();
                 
 		// Set statuses
