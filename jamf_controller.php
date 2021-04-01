@@ -308,9 +308,10 @@ class jamf_controller extends Module_controller
             }
             jsonView($out);
         } else {
+
             $jamf = new Jamf_model($incoming_serial);
             $jamf_status = $jamf->run_jamf_stats();
-            
+
             // Check if machine exists in Jamf
             if ($jamf_status->rs['jamf_id'] == 0 ){
                 $out = array("serial"=>$incoming_serial,"status"=>"Machine not found in Jamf!");
