@@ -116,7 +116,7 @@ class Jamf_helper
 
         $Jamf_model->distribution_point = $json->computer->general->distribution_point;
         $Jamf_model->sus = $json->computer->general->sus;
-        $Jamf_model->netboot_server = $json->computer->general->netboot_server;
+        $Jamf_model->netboot_server = null; // This has been deprecated by Jamf
         $Jamf_model->itunes_store_account_is_active = +$json->computer->general->itunes_store_account_is_active;
 
         if (isset($json->computer->general->site)) {
@@ -197,7 +197,11 @@ class Jamf_helper
         $Jamf_model->institutional_recovery_key = $json->computer->hardware->institutional_recovery_key;
         $Jamf_model->mapped_printers = json_encode($json->computer->hardware->mapped_printers); // Encode the mapped_printers array for processing by the client tab
         $Jamf_model->applications = json_encode($json->computer->software->applications); // Encode the applications array for processing by the client tab
-        $Jamf_model->master_password_set = +$json->computer->hardware->master_password_set;
+        if (isset($json->computer->hardware->master_password_set)) {
+            $Jamf_model->master_password_set = +$json->computer->hardware->master_password_set;
+        } else {
+            $Jamf_model->master_password_set = null;
+        }
         $Jamf_model->model = $json->computer->hardware->model;
         $Jamf_model->model_identifier = $json->computer->hardware->model_identifier;
         $Jamf_model->nic_speed = $json->computer->hardware->nic_speed;
@@ -432,8 +436,6 @@ class Jamf_helper
      **/
     public function get_jamf_url($url)
     {
-        $jamf_username = conf('jamf_username');
-        $jamf_password = conf('jamf_password');
         $jamf_verify_ssl = conf('jamf_verify_ssl');
         if(conf('jamf_verify_ssl') == FALSE || $jamf_verify_ssl == "false" || $jamf_verify_ssl == "FALSE" || $jamf_verify_ssl == "0" || $jamf_verify_ssl == 0){
             $jamf_verify_ssl = 0;
@@ -445,11 +447,10 @@ class Jamf_helper
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Timeout of 10 seconds
-        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($ch, CURLOPT_USERPWD, "$jamf_username:$jamf_password");
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $jamf_verify_ssl);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $jamf_verify_ssl);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array ("Accept: application/json"));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Accept: application/json', 'Authorization: Bearer '.$this->get_jamf_bearer_token()));
+
         $return = curl_exec($ch);
         
         // Check for timeout
@@ -473,8 +474,6 @@ class Jamf_helper
      **/
     public function get_jamf_url_xml($url)
     {
-        $jamf_username = conf('jamf_username');
-        $jamf_password = conf('jamf_password');
         $jamf_verify_ssl = conf('jamf_verify_ssl');
         if(conf('jamf_verify_ssl') == FALSE || $jamf_verify_ssl == "false" || $jamf_verify_ssl == "FALSE" || $jamf_verify_ssl == "0" || $jamf_verify_ssl == 0){
             $jamf_verify_ssl = 0;
@@ -486,11 +485,10 @@ class Jamf_helper
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Timeout of 10 seconds
-        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($ch, CURLOPT_USERPWD, "$jamf_username:$jamf_password");
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $jamf_verify_ssl);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $jamf_verify_ssl);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array ("Accept: document/xml"));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Accept: document/xml', 'Authorization: Bearer '.$this->get_jamf_bearer_token()));
+
         $return = curl_exec($ch);
         
         // Check for timeout
@@ -499,6 +497,54 @@ class Jamf_helper
             return false;
         } else if (curl_errno($ch)) {
             error_log("MunkiReport:- There was an error getting data from the Jamf server: ".curl_errno($ch)." - ".$url, 0);
+            return false;
+        }
+
+        return $return;
+    }
+
+
+    /**
+     * Retrieve Jamf bearer token
+     *
+     * @return string of Jamf bearer token, FALSE if failed
+     * @author Tuxudo for MunkiReport
+     *
+     **/
+    // public function get_jamf_bearer_token(&$Jamf_model)
+    public function get_jamf_bearer_token()
+    {
+        $jamf_username = conf('jamf_username');
+        $jamf_password = conf('jamf_password');
+        $jamf_verify_ssl = conf('jamf_verify_ssl');
+        if(conf('jamf_verify_ssl') == FALSE || $jamf_verify_ssl == "false" || $jamf_verify_ssl == "FALSE" || $jamf_verify_ssl == "0" || $jamf_verify_ssl == 0){
+            $jamf_verify_ssl = 0;
+        } else {
+            $jamf_verify_ssl = 1;
+        }
+
+        // Trim off any slashes on the right
+        $jamf_server = rtrim(conf('jamf_server'), '/');
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $jamf_server."/api/v1/auth/token");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Timeout of 10 seconds
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_USERPWD, "$jamf_username:$jamf_password");
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $jamf_verify_ssl);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $jamf_verify_ssl);
+        curl_setopt($ch, CURLOPT_POST, 1);
+
+        $json = json_decode(curl_exec($ch));
+        $return = $json->token;
+
+        // Check for timeout
+        if (curl_errno($ch) && curl_errno($ch) == 28) {
+            error_log("MunkiReport:- Jamf server timed out when getting the bearer token!", 0);
+            return false;
+        } else if (curl_errno($ch)) {
+            error_log("MunkiReport:- There was an error getting the bearer token from the Jamf server: ".curl_errno($ch), 0);
             return false;
         }
 

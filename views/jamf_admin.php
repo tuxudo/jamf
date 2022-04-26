@@ -66,6 +66,31 @@ $(document).on('appReady', function(e, lang) {
                 } else {
                     $jamf_verify_ssl = 1;
                 }
+
+                // // Get Jamf bearer token
+                // // Commented out for now
+                // $ch = curl_init();
+                // curl_setopt($ch, CURLOPT_URL, rtrim(conf('jamf_server'), '/')."/api/v1/auth/token");
+                // curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                // curl_setopt($ch, CURLOPT_TIMEOUT, 5); // Timeout of 5 seconds
+                // curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+                // curl_setopt($ch, CURLOPT_USERPWD, conf('jamf_username').':'.conf('jamf_password'));
+                // curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $jamf_verify_ssl);
+                // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $jamf_verify_ssl);
+                // curl_setopt($ch, CURLOPT_POST, 1);
+
+                // $json = json_decode(curl_exec($ch));
+                // $bearer_token = $json->token;
+                
+                // // Check for timeout
+                // if (curl_errno($ch) && curl_errno($ch) == 28) {
+                //     error_log("MunkiReport:- Jamf server timed out when getting the bearer token!", 0);
+                //     return false;
+                // } else if (curl_errno($ch)) {
+                //     error_log("MunkiReport:- There was an error getting the bearer token from the Jamf server: ".curl_errno($ch), 0);
+                //     return false;
+                // }
+
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, rtrim(conf('jamf_server'), '/').'/JSSResource/jssuser');
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -75,6 +100,7 @@ $(document).on('appReady', function(e, lang) {
                 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $jamf_verify_ssl);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $jamf_verify_ssl);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Accept: application/json'));
+                // curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Accept: application/json', 'Authorization: Bearer'.$bearer_token'));
 
                 $jamfresult = curl_exec($ch);
                 if (strpos($jamfresult, 'The request requires user authentication') !== false){
