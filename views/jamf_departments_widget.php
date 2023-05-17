@@ -1,15 +1,14 @@
 <div class="col-md-4">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-object-group"></i>
-                <span data-i18n="jamf.departments"></span>
-                <list-link data-url="/show/listing/jamf/jamf"></list-link>
-            </h3>
+    <div class="card">
+        <div class="card-heading">
+            <i class="fa fa-object-group"></i>
+            <span data-i18n="jamf.departments"></span>
+            <a href="/show/listing/jamf/jamf" class="pull-right"><i class="fa fa-list"></i></a>
         </div>
-        <div id="jamf-departments-panel" class="panel-body text-center">
+        <div id="jamf-departments-card" class="card-body text-center">
             <svg id="jamf-departments-plot" style="width:100%; height: 300px"></svg>
         </div>
-    </div><!-- /panel -->
+    </div><!-- /card -->
 </div><!-- /col -->
 
 <script>

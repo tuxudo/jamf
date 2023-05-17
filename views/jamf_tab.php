@@ -2,7 +2,7 @@
 
 <div id="jamf-msg" data-i18n="listing.loading" class="col-lg-12 text-center"></div>
 
-<div id="jamf-view" class="row hide">
+<div id="jamf-view" class="row pt-4 hide">
     <div class="col-md-12">
 
         <!--Top nav tabs-->
@@ -22,7 +22,7 @@
               <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-UserLocation" id="jamf_userlocation_button"></a></li>
               <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-Purchasing" id="jamf_purchasing_button"></a></li>
               <li id="jamf-button"><a class="jamf-tablink" data-toggle="tab" href="#Jamf-ExtensionAttributes" id="jamf_extension_attributes_button"></a></li>
-            </ul>  
+            </ul>
             <!--Inventory side tabs content-->
             <div class="tab-content jamf-tab-content">
                 <!--General tab content-->
@@ -319,7 +319,7 @@
                     <div id="Jamf-ExtensionAttributes-Table"></div>
                 </div>
             </div>
-          </div>      
+          </div>
           <!--Mangement tab-->
           <div id="jamf-management" class="tab-pane">
             <!--Mangement side tabs-->
@@ -409,23 +409,22 @@
     </div>
 </div>
 
-<script>    
+<script>
 $(document).on('appReady', function(e, lang) {
 
-	// Get Jamf data
-	$.getJSON( appUrl + '/module/jamf/get_data/' + serialNumber, function( data ) {
-		if( ! data['jamf_id']){
-			$('#jamf-msg').text(i18n.t('no_data'));
-		}
-		else{
+        // Get Jamf data
+        $.getJSON( appUrl + '/module/jamf/get_data/' + serialNumber, function( data ) {
+        if( ! data['jamf_id']){
+            $('#jamf-msg').text(i18n.t('no_data'));
+        } else{
 
-			// Hide
-			$('#jamf-msg').text('');
-			$('#jamf-view').removeClass('hide');
+            // Hide
+            $('#jamf-msg').text('');
+            $('#jamf-view').removeClass('hide');
 
             // Get the Jamf server address
             var jamf_server = "<?php configAppendFile(__DIR__ . '/../config.php'); echo rtrim(conf('jamf_server'), '/'); ?>";
-            
+
             // Generate buttons and tabs
             $('#jamf_view_in').html('<a class="btn btn-default btn-xs" target="_blank" href="'+jamf_server+'/computers.html?id='+data['jamf_id']+'&o=r&v=inventory"> '+i18n.t("jamf.view_in_jamf")+'</a>'); // View in Jamf button
             $('#jamf_general_button').html('<i class="fa fa-info-circle"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.general")); // General tab
@@ -444,7 +443,7 @@ $(document).on('appReady', function(e, lang) {
             $('#jamf_restricted_software_button').html('<i class="fa fa-shield"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.restricted_software_management")+'&nbsp;&nbsp;<span id="jamf-restsoft-cnt" class="badge"></span>'); // Restricted Software tab
             $('#jamf_computergroups_button').html('<i class="fa fa-desktop"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.computergroups")); // Computer Groups tab
             $('#jamf_patchmanagement_button').html('<i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;&nbsp;'+i18n.t("jamf.patch_management_logs_history")); // Patch Management tab
-            
+
             // Fix dates, after checking if date is set
             if ( data['last_contact_time_epoch'] !== null ){
                 $('#jamf_last_contact_time_epoch').html(moment(parseInt(data['last_contact_time_epoch'])).format('llll')+' - '+moment(parseInt(data['last_contact_time_epoch'])).fromNow());
@@ -470,7 +469,7 @@ $(document).on('appReady', function(e, lang) {
             if ( data['last_cloud_backup_date_epoch'] !== null ){
                 $('#jamf_last_cloud_backup_date_epoch').html(moment(parseInt(data['last_cloud_backup_date_epoch'])).format('llll')+' - '+moment(parseInt(data['last_cloud_backup_date_epoch'])).fromNow());
             }
-            
+
             // Format battery percent
             if (parseInt(data['battery_capacity']) >= 0) {
                 $('#jamf_battery_capacity').text(data['battery_capacity']+"%");
@@ -484,7 +483,7 @@ $(document).on('appReady', function(e, lang) {
             } else {
                 $('#jamf_managed').text(i18n.t("no"));
             }
-            
+
             // Format booleans
             if ( data['mdm_capable'] == 1 ){
                 $('#jamf_mdm_capable').text(i18n.t("yes"));
@@ -521,7 +520,7 @@ $(document).on('appReady', function(e, lang) {
             } else {
                 $('#jamf_is_purchased').text(i18n.t("jamf.is_leased"));
             }
-			
+
             // Format hardware strings
             $('#jamf_processor_speed').html((parseInt(data['processor_speed'])/1000)+" Ghz");
             $('#jamf_cache_size').html('<span title="'+data['cache_size']+' KB">'+Math.round((parseInt(data['cache_size'])/1000), 0)+" MB</span>");
@@ -533,8 +532,8 @@ $(document).on('appReady', function(e, lang) {
             } else {
                 $('#jamf_bus_speed').html("")
             }
-            
-            // Format Site Name/ID            
+
+            // Format Site Name/ID
             if (parseInt(data['site_id']) != -1 ){
                 $('#jamf_site_name').html('<a title="'+i18n.t("jamf.view_in_jamf")+'" target="_blank" href="'+jamf_server+'/site.html?id='+data['site_id']+'"> '+data['site_name']+'</span>');
                 $('#jamf_site_id').text(data['site_id']);
@@ -542,7 +541,7 @@ $(document).on('appReady', function(e, lang) {
                 $('#jamf_site_name').removeClass('hide');
                 $('#jamf_site_id_head').removeClass('hide');
                 $('#jamf_site_id').removeClass('hide');
-            } 
+            }
 
 
             // Make Extension Attributes table
@@ -821,60 +820,60 @@ $(document).on('appReady', function(e, lang) {
                 $('#Jamf-Patch-Policies-Table').html(patchpoliciesrows+"</tbody></table>") // Close table framework and assign to HTML ID
             }
 
-			// Add strings
-			$('#jamf_serial_number').text(data['serial_number']);
-			$('#jamf_id').text(data['jamf_id']); 
-			$('#jamf_name').text(data['name']);
-			$('#jamf_mac_address').text(data['mac_address']);
-			$('#jamf_alt_mac_address').text(data['alt_mac_address']);
-			$('#jamf_ip_address').text(data['ip_address']);
-			$('#jamf_last_reported_ip').text(data['last_reported_ip']);
-			$('#jamf_version').text(data['jamf_version']);
-			$('#jamf_barcode_1').text(data['barcode_1']);
-			$('#jamf_barcode_2').text(data['barcode_2']);
-			$('#jamf_asset_tag').text(data['asset_tag']);
-			$('#jamf_mdm_capable_users').text(data['mdm_capable_users']);
-			$('#jamf_distribution_point').text(data['distribution_point']);
-			$('#jamf_sus').text(data['sus']);
-			$('#jamf_netboot_server').text(data['netboot_server']);
-			$('#jamf_udid').text(data['udid']);
-			$('#jamf_username').text(data['username']);
-			$('#jamf_realname').text(data['realname']);
-			$('#jamf_email_address').text(data['email_address']);
-			$('#jamf_position').text(data['position']);
-			$('#jamf_phone').text(data['phone']);
-			$('#jamf_department').text(data['department']);
-			$('#jamf_building').text(data['building']);
-			$('#jamf_room').text(data['room']);
-			$('#jamf_po_number').text(data['po_number']);
-			$('#jamf_vendor').text(data['vendor']);
-			$('#jamf_applecare_id').text(data['applecare_id']);
-			$('#jamf_purchase_price').text(data['purchase_price']);
-			$('#jamf_purchasing_account').text(data['purchasing_account']);
-			$('#jamf_purchasing_contact').text(data['purchasing_contact']);
-			$('#jamf_life_expectancy').text(data['life_expectancy']);
-			$('#jamf_available_ram_slots').text(data['available_ram_slots']);
-			$('#jamf_boot_rom').text(data['boot_rom']);
-			$('#jamf_disk_encryption_configuration').text(data['disk_encryption_configuration']);
-			$('#jamf_institutional_recovery_key').text(data['institutional_recovery_key']);
-			$('#jamf_model').text(data['model']);
-			$('#jamf_model_identifier').text(data['model_identifier']);
-			$('#jamf_nic_speed').text(data['nic_speed']);
-			$('#jamf_number_cores').text(data['number_cores']);
-			$('#jamf_number_processors').text(data['number_processors']);
-			$('#jamf_optical_drive').text(data['optical_drive']);
-			$('#jamf_processor_architecture').text(data['processor_architecture']);
-			$('#jamf_processor_type').text(data['processor_type']);
-			$('#jamf_smc_version').text(data['smc_version']);
-			$('#jamf_licensed_software').text(data['licensed_software']);
-			$('#jamf_available_software_updates').text(data['available_software_updates']);
-			$('#jamf_computer_group_memberships').text(data['computer_group_memberships']);
-		}
+            // Add strings
+            $('#jamf_serial_number').text(data['serial_number']);
+            $('#jamf_id').text(data['jamf_id']); 
+            $('#jamf_name').text(data['name']);
+            $('#jamf_mac_address').text(data['mac_address']);
+            $('#jamf_alt_mac_address').text(data['alt_mac_address']);
+            $('#jamf_ip_address').text(data['ip_address']);
+            $('#jamf_last_reported_ip').text(data['last_reported_ip']);
+            $('#jamf_version').text(data['jamf_version']);
+            $('#jamf_barcode_1').text(data['barcode_1']);
+            $('#jamf_barcode_2').text(data['barcode_2']);
+            $('#jamf_asset_tag').text(data['asset_tag']);
+            $('#jamf_mdm_capable_users').text(data['mdm_capable_users']);
+            $('#jamf_distribution_point').text(data['distribution_point']);
+            $('#jamf_sus').text(data['sus']);
+            $('#jamf_netboot_server').text(data['netboot_server']);
+            $('#jamf_udid').text(data['udid']);
+            $('#jamf_username').text(data['username']);
+            $('#jamf_realname').text(data['realname']);
+            $('#jamf_email_address').text(data['email_address']);
+            $('#jamf_position').text(data['position']);
+            $('#jamf_phone').text(data['phone']);
+            $('#jamf_department').text(data['department']);
+            $('#jamf_building').text(data['building']);
+            $('#jamf_room').text(data['room']);
+            $('#jamf_po_number').text(data['po_number']);
+            $('#jamf_vendor').text(data['vendor']);
+            $('#jamf_applecare_id').text(data['applecare_id']);
+            $('#jamf_purchase_price').text(data['purchase_price']);
+            $('#jamf_purchasing_account').text(data['purchasing_account']);
+            $('#jamf_purchasing_contact').text(data['purchasing_contact']);
+            $('#jamf_life_expectancy').text(data['life_expectancy']);
+            $('#jamf_available_ram_slots').text(data['available_ram_slots']);
+            $('#jamf_boot_rom').text(data['boot_rom']);
+            $('#jamf_disk_encryption_configuration').text(data['disk_encryption_configuration']);
+            $('#jamf_institutional_recovery_key').text(data['institutional_recovery_key']);
+            $('#jamf_model').text(data['model']);
+            $('#jamf_model_identifier').text(data['model_identifier']);
+            $('#jamf_nic_speed').text(data['nic_speed']);
+            $('#jamf_number_cores').text(data['number_cores']);
+            $('#jamf_number_processors').text(data['number_processors']);
+            $('#jamf_optical_drive').text(data['optical_drive']);
+            $('#jamf_processor_architecture').text(data['processor_architecture']);
+            $('#jamf_processor_type').text(data['processor_type']);
+            $('#jamf_smc_version').text(data['smc_version']);
+            $('#jamf_licensed_software').text(data['licensed_software']);
+            $('#jamf_available_software_updates').text(data['available_software_updates']);
+            $('#jamf_computer_group_memberships').text(data['computer_group_memberships']);
+        }
 
-	});
+    });
 
 });
-    
+
 // Make button groups active
 $(".btn-group > .btn").click(function(){
     $(this).addClass("active").siblings().removeClass("active");

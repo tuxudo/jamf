@@ -3,8 +3,8 @@
   configAppendFile(__DIR__ . '/../config.php');
 ?>
 
-<div class="container">
-    <div class="row"><span id="jamf_pull_all"></span></div>
+<div class="container fluid">
+    <div class="row pt-4"><span id="jamf_pull_all"></span></div>
     <div class="col-lg-6">
         <div id="GetAllJamf-Progress" class="progress hide">
             <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 0%;">
