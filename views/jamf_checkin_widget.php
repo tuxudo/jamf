@@ -1,6 +1,6 @@
 <div class="col-lg-4 col-md-6">
 	<div class="card" id="jamf-checkin-widget">
-		<div class="card-heading" data-container="body">
+		<div class="card-header" data-container="body">
 			<i class="fa fa-hand-peace-o"></i>
 			<span data-i18n="jamf.last_contact_time_epoch"></span>
 			<a href="/show/listing/jamf/jamf" class="pull-right"><i class="fa fa-list"></i></a>

@@ -1,6 +1,6 @@
 <div class="col-lg-4 col-md-6">
 	<div class="card" id="user-approved-mdm-widget">
-		<div class="card-heading" data-container="body">
+		<div class="card-header" data-container="body">
 			<i class="fa fa-check-square"></i>
 			<span data-i18n="jamf.user_approved_mdm"></span>
 			<a href="/show/listing/jamf/jamf" class="pull-right"><i class="fa fa-list"></i></a>

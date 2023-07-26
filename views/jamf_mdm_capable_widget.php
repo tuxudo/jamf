@@ -1,6 +1,6 @@
 <div class="col-lg-4 col-md-6">
-	<div class="care" id="mdm-capable-widget">
-		<div class="card-heading" data-container="body">
+	<div class="card" id="mdm-capable-widget">
+		<div class="card-header" data-container="body">
 			<i class="fa fa-server"></i>
 			<span data-i18n="jamf.mdm_capable"></span>
 			<a href="/show/listing/jamf/jamf" class="pull-right"><i class="fa fa-list"></i></a>

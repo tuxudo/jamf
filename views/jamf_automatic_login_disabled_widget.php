@@ -1,6 +1,6 @@
 <div class="col-lg-4 col-md-6">
 	<div class="card" id="automatic-login-disabled-widget">
-		<div class="card-heading" data-container="body">
+		<div class="card-header" data-container="body">
 			<i class="fa fa-sign-in"></i>
 			<span data-i18n="jamf.disable_automatic_login"></span>
 			<a href="/show/listing/jamf/jamf" class="pull-right"><i class="fa fa-list"></i></a>

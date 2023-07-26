@@ -1,6 +1,6 @@
 <div class="col-lg-4 col-md-6">
 	<div class="card" id="enrolled-via-dep-widget">
-		<div class="card-heading" data-container="body">
+		<div class="card-header" data-container="body">
 			<i class="fa fa-plus-circle"></i>
 			<span data-i18n="jamf.enrolled_via_dep"></span>
 			<a href="/show/listing/jamf/jamf" class="pull-right"><i class="fa fa-list"></i></a>

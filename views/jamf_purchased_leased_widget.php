@@ -1,6 +1,6 @@
 <div class="col-lg-4 col-md-6">
-	<div class="card card-default" id="purchased-leased-widget">
-		<div class="card-heading" data-container="body">
+	<div class="card" id="purchased-leased-widget">
+		<div class="card-header" data-container="body">
 			<i class="fa fa-money"></i>
 			<span data-i18n="jamf.purchased_or_leased"></span>
 			<a href="/show/listing/jamf/jamf" class="pull-right"><i class="fa fa-list"></i></a>
@@ -20,7 +20,7 @@ $(document).on('appUpdate', function(e, lang) {
 			return;
 		}
 
-		var panel = $('#purchased-leased-widget div.card-body'),
+		var card = $('#purchased-leased-widget div.card-body'),
 			baseUrl = appUrl + '/show/listing/jamf/jamf#';
 		card.empty();
 

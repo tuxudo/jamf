@@ -1,6 +1,6 @@
 <div class="col-md-4">
     <div class="card">
-        <div class="card-heading">
+        <div class="card-header">
             <i class="fa fa-object-group"></i>
             <span data-i18n="jamf.departments"></span>
             <a href="/show/listing/jamf/jamf" class="pull-right"><i class="fa fa-list"></i></a>

@@ -4,23 +4,23 @@
 	)
 )); ?>
 
-<div class="container">
-	<div class="row">
+<div class="container-fluid">
+	<div class="row pt-4">
 		<?php $widget->view($this, 'jamf_enrolled_via_dep'); ?>
 		<?php $widget->view($this, 'jamf_user_approved_enrollment'); ?>
 		<?php $widget->view($this, 'jamf_user_approved_mdm'); ?>
 	</div>
-	<div class="row">
+	<div class="row pt-4">
 		<?php $widget->view($this, 'jamf_mdm_capable'); ?>
 		<?php $widget->view($this, 'jamf_purchased_leased'); ?>
 		<?php $widget->view($this, 'jamf_automatic_login_disabled'); ?>
 	</div>
-	<div class="row">
+	<div class="row pt-4">
 		<?php $widget->view($this, 'jamf_version'); ?>
 		<?php $widget->view($this, 'jamf_xprotect_version'); ?>
 		<?php $widget->view($this, 'jamf_pending_failed'); ?>
 	</div>
-	<div class="row">
+	<div class="row pt-4">
 		<?php $widget->view($this, 'jamf_departments'); ?>
 		<?php $widget->view($this, 'jamf_buildings'); ?>
 		<?php $widget->view($this, 'jamf_checkin'); ?>
